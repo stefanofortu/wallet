@@ -40,15 +40,4 @@ class Main_Category(AllCategory):
              "Altro", "Correzioni", "Prelievo", "Trasferimento", "Correzioni",
              "Prelievo", "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder"])
 
-class CategoryResults:
-    def __init__(self):
-        self.results = {}
 
-    def __str__(self):
-        output_str = ""
-        for k in self.results.keys():
-            output_str += str(k) + ": " + str(self.results[k]) + "\n"
-        return output_str
-
-    def append(self, category, amount):
-        self.results[category] = amount

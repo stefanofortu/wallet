@@ -1,6 +1,10 @@
 import numpy as np
 import pandas as pd
 
+
+# print(self.full_data.info())
+# print("=====================================================================================", flush=True)
+
 class WalletChecker:
     def __init__(self):
         self.input_filename = "C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-05-22_225645.xls"
@@ -13,16 +17,7 @@ class WalletChecker:
     def import_file(self):
         self.data = pd.read_excel(self.input_filename)
 
-    def filter_out_columns(self):
-        # print(self.full_data.info())
-        self.data.drop(columns=['ref_currency_amount', 'payment_type', 'payment_type_local',
-                                'gps_latitude', 'gps_longitude', 'gps_accuracy_in_meters',
-                                'warranty_in_month', 'transfer', 'payee',
-                                'envelope_id', 'custom_category'], inplace=True)
-        self.data.reset_index(inplace=True, drop=True)
 
-        # print(self.full_data.info())
-        # print("=====================================================================================", flush=True)
 
     def select_personal_accounts(self):
         all_accounts = self.data['account'].unique()
@@ -44,25 +39,7 @@ class WalletChecker:
     def get_data(self):
         return self.data
 
-    @staticmethod
-    def get_time_filtered_data(data, start_date, end_date):
-        if not isinstance(data, pd.DataFrame):
-            print("get_time_filtered_data(): Wrong input type for data")
-            raise (TypeError)
 
-        try:
-            timestamp_start_date = pd.Timestamp(start_date)
-        except:
-            print("Error in timestamp_start_date()")
-            raise (TypeError)
-        try:
-            timestamp_end_date = pd.Timestamp(end_date)
-        except:
-            print("Error in timestamp_end_date()")
-            raise (TypeError)
-        filtered_data = data[(data["date"] > timestamp_start_date) & (data["date"] < timestamp_end_date)]
-        filtered_data.reset_index(inplace=True)
-        return filtered_data
 
     @staticmethod
     def get_data_by_single_category(data, category):
