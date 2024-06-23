@@ -1,12 +1,12 @@
 import xlsxwriter
-from CategoryStructurer import CategoryStructurer
-from CategoryImporter import CategoryImporter
-from DataImport import DataImport
+from processors.CategoryStructurer import CategoryStructurer
+from processors.CategoryImporter import CategoryImporter
+from processors.DataImporter import DataImporter
 
 
 def wallet_process_app():
     try:
-        data_import = DataImport(
+        data_import = DataImporter(
             _filename="C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-06-23.xls",
             _start_date="2024-01-01",
             _end_date="2024-07-31"

@@ -2,7 +2,7 @@ import pandas as pd
 from WalletData import WalletData
 
 
-class DataImport:
+class DataImporter:
 
     def __init__(self, _filename, _start_date, _end_date,):
         self.input_filename = _filename

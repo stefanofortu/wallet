@@ -1,5 +1,5 @@
-from CategoryResults import CategoryResults
-from CategoryStructure import CategoryStructure
+from data.CategoryResults import CategoryResults
+from data.CategoryStructure import CategoryStructure
 
 
 class CategoryStructurer:
