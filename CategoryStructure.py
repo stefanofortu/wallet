@@ -24,5 +24,4 @@ class CategoryStructure:
         for c in CategoryStructure.categories.keys():
             category_list.extend(CategoryStructure.categories[c])
 
-        print(category_list)
         return category_list
