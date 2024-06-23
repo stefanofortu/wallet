@@ -1,6 +1,6 @@
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
-from WalletData import WalletData
+from data.WalletData import WalletData
 
 
 class CategoryImporter:

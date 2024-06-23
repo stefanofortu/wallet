@@ -1,5 +1,5 @@
 import pandas as pd
-from WalletData import WalletData
+from data.WalletData import WalletData
 
 
 class DataImporter:

@@ -29,9 +29,6 @@ Process:
 **IN** : walletData
 
 **FDT** : CategoryImport 
-Data:
-contiene al suo interno la lista delle categorie solo != da zero
-
 Process:
 1. riempie la lista delle categorie 
 2. TO DO : splitta tra #in #out e #risparmi
@@ -42,13 +39,19 @@ Process:
 **OUT** : categoryResult: dati importati e filtrati
 
 ## 3. Category Hierarchy
-** IN ** : categoryResult
+**IN** : categoryResult
 
-** FDT ** : CategoryImport
-Data:
-contiene al suo interno la lista delle categorie di secondo livello
-
+**FDT** : CategoryImport
 Process
 1. calcola le categorie di primo livello
 
-** OUT ** : categoryResult
+**OUT** : categoryResult
+
+## 4. File Export
+**IN** : categoryResult, outfile
+
+**FDT** : scrive su file excel il df
+Process
+1. calcola le categorie di primo livello
+
+**OUT** : categoryResult
