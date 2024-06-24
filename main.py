@@ -19,28 +19,27 @@ def wallet_process_app():
 
     try:
         category_importer = CategoryImporter()
-        wallet_category = category_importer.process(data_2024)
+        wallet_category_results = category_importer.process(data_2024)
     except Exception as e:
         print("CategoryImport() :".format(e))
         exit()
 
     try:
         category_structurer = CategoryStructurer()
-        main_category = category_structurer.process(wallet_category)
+        main_category_results = category_structurer.process(wallet_category_results)
     except Exception as e:
         print("CategoryImport() :".format(e))
         exit()
 
-    #try:
+    # try:
     group_creator = GroupCreator()
-    _ = group_creator.process(wallet_category)
-    #except Exception as e:
+    group_results = group_creator.process(wallet_category_results)
+    # except Exception as e:
     #    print("CategoryImport() :".format(e))
     #    exit()
 
-
     excel_writer = ExcelWriter("pandas_text.xlsx", "2024")
-    excel_writer.process(main_category, wallet_category)
+    excel_writer.process(main_category_results, group_results)
 
 
 if __name__ == '__main__':

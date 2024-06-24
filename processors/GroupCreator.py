@@ -23,7 +23,6 @@ class GroupCreator:
             print("differenza in categoria", category_difference)
             exit()
 
-
         group_results = CategoryResults()
         for group_name in self.expense_groups.keys():
             main_category_amount = 0
@@ -35,3 +34,5 @@ class GroupCreator:
                 group_results.append(sub_group_name, sub_group_name_amount)
                 main_category_amount += sub_group_name_amount
             group_results.append(group_name, main_category_amount)
+
+        return group_results

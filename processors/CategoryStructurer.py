@@ -16,5 +16,6 @@ class CategoryStructurer:
             main_category_amount = 0
             for category in self.main_category[main_category]:
                 main_category_amount += data.df.loc[category]["amount"]
-                main_category_results.append(main_category, main_category_amount)
+                main_category_results.append(category, data.df.loc[category]["amount"])
+            main_category_results.append(main_category, main_category_amount)
         return main_category_results

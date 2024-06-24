@@ -21,12 +21,12 @@ class ExcelWriter:
         self.ws.autofit()
         self.wb.close()
 
-    def process(self, main_category_results, wallet_category_results):
+    def process(self, main_category_results, group_results):
         if not isinstance(main_category_results, CategoryResults):
-            print("ExcelWriter.process(): Wrong input type for data")
+            print("ExcelWriter.process(): Wrong input type for data main_category_results")
             raise TypeError
-        if not isinstance(wallet_category_results, CategoryResults):
-            print("ExcelWriter.process(): Wrong input type for data")
+        if not isinstance(group_results, CategoryResults):
+            print("ExcelWriter.process(): Wrong input type for data group_results")
             raise TypeError
 
         row_num = 0
@@ -37,6 +37,23 @@ class ExcelWriter:
             row_num += 1
             for cat in list(CategoryStructure.categories[main_cat]):
                 self.ws.write(row_num, 0, cat)
-                self.ws.write(row_num, 1, wallet_category_results.df.loc[cat]["amount"])
+                self.ws.write(row_num, 1, main_category_results.df.loc[cat]["amount"])
                 self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
                 row_num += 1
+
+        row_num += 5
+        for main_group in list(CategoryStructure.expense_groups.keys()):
+            self.ws.write(row_num, 0, main_group)
+            self.ws.write(row_num, 1, group_results.df.loc[main_group]["amount"])
+            self.ws.set_row(row_num, None, None, {'collapsed': True})
+            row_num += 1
+            for sub_group in CategoryStructure.expense_groups[main_group].keys():
+                self.ws.write(row_num, 0, sub_group)
+                self.ws.write(row_num, 1, group_results.df.loc[sub_group]["amount"])
+                self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
+                row_num += 1
+                for cat in list(CategoryStructure.expense_groups[main_group][sub_group]):
+                    self.ws.write(row_num, 0, cat)
+                    self.ws.write(row_num, 1, group_results.df.loc[cat]["amount"])
+                    self.ws.set_row(row_num, None, None, {'level': 2, 'hidden': True})
+                    row_num += 1
