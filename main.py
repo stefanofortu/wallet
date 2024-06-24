@@ -3,14 +3,14 @@ from processors.CategoryStructurer import CategoryStructurer
 from processors.CategoryImporter import CategoryImporter
 from processors.DataImporter import DataImporter
 from processors.ExcelWriter import ExcelWriter
+from processors.GroupCreator import GroupCreator
 
 
 def wallet_process_app():
     try:
         data_import = DataImporter(
-            _filename="C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-06-23.xls",
-            _start_date="2024-01-01",
-            _end_date="2024-12-31"
+            filename="C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-06-23.xls",
+            year="2023"
         )
         data_2024 = data_import.get_imported_data()
     except Exception as e:
@@ -18,21 +18,29 @@ def wallet_process_app():
         exit()
 
     try:
-        category_import = CategoryImporter()
-        wallet_category = category_import.process(data_2024)
+        category_importer = CategoryImporter()
+        wallet_category = category_importer.process(data_2024)
     except Exception as e:
         print("CategoryImport() :".format(e))
         exit()
 
     try:
-        category_hierarchy = CategoryStructurer()
-        main_category = category_hierarchy.process(wallet_category)
+        category_structurer = CategoryStructurer()
+        main_category = category_structurer.process(wallet_category)
     except Exception as e:
         print("CategoryImport() :".format(e))
         exit()
 
+    #try:
+    group_creator = GroupCreator()
+    _ = group_creator.process(wallet_category)
+    #except Exception as e:
+    #    print("CategoryImport() :".format(e))
+    #    exit()
+
+
     excel_writer = ExcelWriter("pandas_text.xlsx", "2024")
-    excel_writer.process(main_category,wallet_category)
+    excel_writer.process(main_category, wallet_category)
 
 
 if __name__ == '__main__':

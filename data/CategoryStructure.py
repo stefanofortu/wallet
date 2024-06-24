@@ -14,22 +14,30 @@ class CategoryStructure:
                             "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder", "Adjust balance"]
                   }
 
-    expense_groups = {"Essenziali_Dovute": {"Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance",
-                                                                    "Family", "Affitto/Mutuo", ],
-                                          "Macchina": ["Assicurazione veicoli", "Manutenzione veicoli"],
-                                          "Salute_Beneficienza": ["Salute", "Beneficienza"]
-                                          },
-                    "Indispensabili_Necessità": {"Spesa_Caffe_Lunch": ["Bar & Locali", "Lunch", "Spesa"],
-                                                 "Trasporti": ["Trasporto pubblico", "Carburante", "Parking and Tolls"],
-                                                 "Future": ["Work_New", "Education_New"]
-                                                 },
-                    "Volute_NonEssenziali": {"Selfcare(Clothes & Sport)": ["Abbigliamento", "Gifts",
-                                                                           "Personal Care", "Sport & Fitness"],
-                                             "Fun & Hobbies": ["Electronics", "Fun", "Hobby",
-                                                              "Adjust balance", "Unexpected"],
-                                             "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
-                                             }
-                    }
+    expense_groups = {
+        "Redditi": {
+            "Income": ["Salary", "Interessi, Dividendi", "Refunds"]
+        },
+        "Essenziali_Dovute": {
+            "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family", "Affitto/Mutuo"],
+            "Macchina": ["Assicurazione veicoli", "Manutenzione veicoli"],
+            "Salute_Beneficienza": ["Salute", "Beneficienza"]
+        },
+        "Indispensabili_Necessità": {
+            "Spesa_Caffe_Lunch": ["Bar & Locali", "Lunch", "Spesa"],
+            "Trasporti": ["Trasporto pubblico", "Carburante", "Parking and Tolls"],
+            "Future": ["Work_New", "Education_New"]
+        },
+        "Volute_NonEssenziali": {
+            "Selfcare(Clothes & Sport)": ["Abbigliamento & Scarpe", "Gifts", "Personal Care", "Sport & Fitness"],
+            "Fun & Hobbies": ["Electronics", "Fun", "Hobby", "Adjust balance", "Unexpected"],
+            "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
+        },
+        "Nulle_to_del": {
+            "Da cancellare": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento", "Beni immobili",
+                              "Entrate da affitto", "Prelievo", "Work", "Placeholder"]
+        }
+    }
 
     @staticmethod
     def get_category_structure():
@@ -45,4 +53,20 @@ class CategoryStructure:
 
     @staticmethod
     def get_expenses_groups():
+        CategoryStructure.check_expense_group()
         return CategoryStructure.expense_groups
+
+    @staticmethod
+    def check_expense_group():
+        all_categories_of_expense_groups = []
+        for expense_groups_name in CategoryStructure.expense_groups.keys():
+            for categories_list in CategoryStructure.expense_groups[expense_groups_name].keys():
+                all_categories_of_expense_groups.extend(
+                    CategoryStructure.expense_groups[expense_groups_name][categories_list])
+
+        all_basic_categories = CategoryStructure.get_basic_categories()
+
+        category_difference = list(set(all_basic_categories) ^ set(all_categories_of_expense_groups))
+        if len(category_difference) > 0:
+            print("CategoryStructure.check_expense_group(): error", category_difference)
+            raise TypeError

@@ -1,16 +1,26 @@
 import pandas as pd
+
 from data.WalletData import WalletData
 
 
 class DataImporter:
 
-    def __init__(self, _filename, _start_date, _end_date,):
-        self.input_filename = _filename
+    def __init__(self, filename, year=None, start_date=None, end_date=None, ):
+        self.input_filename = filename
         self.wallet_data = None
-        self.start_date = _start_date
-        self.end_date = _end_date
         self.import_file()
         self.select_personal_accounts()
+
+        if year is not None:
+            self.start_date = year + "-01-01"
+            self.end_date = year + "-12-31"
+        elif start_date is not None and end_date is not None:
+            self.start_date = start_date
+            self.end_date = end_date
+        else:
+            print("Error in year | start_data | end_date input")
+            raise TypeError
+
         self.filter_data_by_time()
 
     def get_imported_data(self) -> WalletData:
@@ -25,7 +35,8 @@ class DataImporter:
         accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays"])
         account_to_be_removed = list(set(all_accounts) - set(accounts_to_keep))
         for account in account_to_be_removed:
-            self.wallet_data.df = self.wallet_data.df.drop(self.wallet_data.df[self.wallet_data.df["account"] == account].index)
+            self.wallet_data.df = self.wallet_data.df.drop(
+                self.wallet_data.df[self.wallet_data.df["account"] == account].index)
         self.wallet_data.df.reset_index(inplace=True, drop=True)
 
         accounts = list(self.wallet_data.df['account'].unique())

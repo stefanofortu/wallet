@@ -7,11 +7,10 @@ class WalletData:
 
         if not isinstance(data, pd.DataFrame):
             print("WalletData - init(): Wrong input type for data")
-            raise (TypeError)
+            raise TypeError
 
         self.df = data
         self.filter_out_columns()
-        # self.check_columns_name()
 
     def filter_out_columns(self):
         self.df.drop(columns=['ref_currency_amount', 'payment_type', 'payment_type_local',
@@ -25,4 +24,4 @@ class WalletData:
 
         if len(difference_column_list) > 0:
             print("more column than allowed in import file")
-            raise (ImportError)
+            raise ImportError
