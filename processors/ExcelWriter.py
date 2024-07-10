@@ -41,7 +41,7 @@ class ExcelWriter:
                 self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
                 row_num += 1
 
-        row_num += 5
+        row_num += 3
         for main_group in list(CategoryStructure.expense_groups.keys()):
             self.ws.write(row_num, 0, main_group)
             self.ws.write(row_num, 1, group_results.df.loc[main_group]["amount"])

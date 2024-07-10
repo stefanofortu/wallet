@@ -47,18 +47,19 @@ class DataImporter:
     def filter_data_by_time(self):
         if not isinstance(self.wallet_data, WalletData):
             print("get_time_filtered_data(): Wrong input type for data")
-            raise (TypeError)
+            raise TypeError
 
         try:
             timestamp_start_date = pd.Timestamp(self.start_date)
         except:
             print("Error in timestamp_start_date()")
-            raise (TypeError)
+            raise TypeError
+
         try:
             timestamp_end_date = pd.Timestamp(self.end_date)
         except:
             print("Error in timestamp_end_date()")
-            raise (TypeError)
+            raise TypeError
         filtered_data = self.wallet_data.df[(self.wallet_data.df["date"] > timestamp_start_date) &
                                             (self.wallet_data.df["date"] < timestamp_end_date)]
         filtered_data.reset_index(inplace=True)

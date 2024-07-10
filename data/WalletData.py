@@ -10,7 +10,13 @@ class WalletData:
             raise TypeError
 
         self.df = data
+        self.verify_currency()
         self.filter_out_columns()
+
+    def verify_currency(self):
+        a = self.df['currency'].unique()
+        if a.size != 1 or a[0] != 'EUR':
+            raise ValueError('All currency in dataframe are not EURO (€)')
 
     def filter_out_columns(self):
         self.df.drop(columns=['ref_currency_amount', 'payment_type', 'payment_type_local',
