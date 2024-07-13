@@ -22,6 +22,7 @@ class DataImporter:
             raise TypeError
 
         self.filter_data_by_time()
+        self.verify_single_label()
 
     def get_imported_data(self) -> WalletData:
         return self.wallet_data
@@ -43,6 +44,17 @@ class DataImporter:
         account_remained = list(set(accounts) ^ set(accounts_to_keep))
         if len(account_remained) > 0:
             print("The following accounts are not present", account_remained)
+
+    def verify_single_label(self):
+        labels_imported = self.wallet_data.df['labels'].unique()
+        for label in labels_imported:
+            if label != "in" and label != "out" and label != "risparmi":
+                print("all labels imported:", labels_imported)
+                filtered_data = self.wallet_data.df[(self.wallet_data.df["labels"] != "in") &
+                                                    (self.wallet_data.df["labels"] != "out") &
+                                                    (self.wallet_data.df["labels"] != "risparmi")]
+                print(filtered_data[['date','account', 'category', 'labels']])
+                raise ValueError('Label not in/out/savings')
 
     def filter_data_by_time(self):
         if not isinstance(self.wallet_data, WalletData):

@@ -14,8 +14,8 @@ class WalletData:
         self.filter_out_columns()
 
     def verify_currency(self):
-        a = self.df['currency'].unique()
-        if a.size != 1 or a[0] != 'EUR':
+        currency_list = self.df['currency'].unique()
+        if currency_list.size != 1 or currency_list[0] != 'EUR':
             raise ValueError('All currency in dataframe are not EURO (€)')
 
     def filter_out_columns(self):
@@ -31,3 +31,4 @@ class WalletData:
         if len(difference_column_list) > 0:
             print("more column than allowed in import file")
             raise ImportError
+

@@ -20,8 +20,8 @@ Data:
 Process:
 1. carica il file csv
 3. esegue i seguenti check 
-   . DONE: seleziona solo i wallet che contano
-   . TO DO: controlla che la currency sia euro su tutti e poi cancella la colonna 
+   . seleziona solo i wallet che contano
+   . controlla che la currency sia euro su tutti e poi cancella la colonna 
    
 **OUT** : walletData: dati importati e filtrati
 

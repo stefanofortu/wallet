@@ -25,14 +25,21 @@ class GroupCreator:
 
         group_results = CategoryResults()
         for group_name in self.expense_groups.keys():
-            main_category_amount = 0
+            main_category_in = 0
+            main_category_out = 0
+            main_category_savings = 0
             for sub_group_name in self.expense_groups[group_name].keys():
-                sub_group_name_amount = 0
+                sub_group_name_in = 0
+                sub_group_name_out = 0
+                sub_group_name_savings = 0
                 for category_name in self.expense_groups[group_name][sub_group_name]:
-                    sub_group_name_amount += data.df.loc[category_name]["amount"]
-                    group_results.append(category_name, data.df.loc[category_name]["amount"])
-                group_results.append(sub_group_name, sub_group_name_amount)
-                main_category_amount += sub_group_name_amount
-            group_results.append(group_name, main_category_amount)
+                    sub_group_name_out += data.df.loc[category_name]["out"]
+                    group_results.append(category_name, data.df.loc[category_name]["in"],
+                                         data.df.loc[category_name]["out"], data.df.loc[category_name]["savings"])
+                group_results.append(sub_group_name, sub_group_name_in, sub_group_name_out, sub_group_name_savings)
+                main_category_in += sub_group_name_in
+                main_category_out += sub_group_name_out
+                main_category_savings += sub_group_name_savings
+            group_results.append(group_name, main_category_in, main_category_out, main_category_savings)
 
         return group_results

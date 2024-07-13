@@ -30,30 +30,39 @@ class ExcelWriter:
             raise TypeError
 
         row_num = 0
+        self.ws.write(row_num, 0, "Categories")
+        self.ws.write(row_num, 1, "in")
+        self.ws.write(row_num, 2, "out")
+        self.ws.write(row_num, 3, "savings")
+        row_num += 1
         for main_cat in list(CategoryStructure.categories.keys()):
             self.ws.write(row_num, 0, main_cat)
-            self.ws.write(row_num, 1, main_category_results.df.loc[main_cat]["amount"])
+            self.ws.write(row_num, 1, main_category_results.df.loc[main_cat]["in"])
+            self.ws.write(row_num, 2, main_category_results.df.loc[main_cat]["out"])
+            self.ws.write(row_num, 3, main_category_results.df.loc[main_cat]["savings"])
             self.ws.set_row(row_num, None, None, {'collapsed': True})
             row_num += 1
             for cat in list(CategoryStructure.categories[main_cat]):
                 self.ws.write(row_num, 0, cat)
-                self.ws.write(row_num, 1, main_category_results.df.loc[cat]["amount"])
+                self.ws.write(row_num, 1, main_category_results.df.loc[cat]["in"])
+                self.ws.write(row_num, 2, main_category_results.df.loc[cat]["out"])
+                self.ws.write(row_num, 3, main_category_results.df.loc[cat]["savings"])
                 self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
                 row_num += 1
 
         row_num += 3
         for main_group in list(CategoryStructure.expense_groups.keys()):
             self.ws.write(row_num, 0, main_group)
-            self.ws.write(row_num, 1, group_results.df.loc[main_group]["amount"])
+            self.ws.write(row_num, 1, group_results.df.loc[main_group]["out"])
             self.ws.set_row(row_num, None, None, {'collapsed': True})
             row_num += 1
             for sub_group in CategoryStructure.expense_groups[main_group].keys():
                 self.ws.write(row_num, 0, sub_group)
-                self.ws.write(row_num, 1, group_results.df.loc[sub_group]["amount"])
+                self.ws.write(row_num, 1, group_results.df.loc[sub_group]["out"])
                 self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
                 row_num += 1
                 for cat in list(CategoryStructure.expense_groups[main_group][sub_group]):
                     self.ws.write(row_num, 0, cat)
-                    self.ws.write(row_num, 1, group_results.df.loc[cat]["amount"])
+                    self.ws.write(row_num, 1, group_results.df.loc[cat]["out"])
                     self.ws.set_row(row_num, None, None, {'level': 2, 'hidden': True})
                     row_num += 1
