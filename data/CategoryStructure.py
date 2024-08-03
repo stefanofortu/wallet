@@ -9,14 +9,15 @@ class CategoryStructure:
                   "Travel & Holidays": ["Summer Holidays", "Weekends"],
                   "Spese finanziarie": ["Beneficienza", "Salute"],
                   "Investimenti": ["Education", "Work", "Beni immobili", "Education_New", "Work_New"],
-                  "Introiti": ["Entrate da affitto", "Interessi, Dividendi", "Refunds", "Salary"],
-                  "Altro": ["Correzioni", "Prelievo", "Trasferimento", "Correzioni", "Prelievo",
-                            "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder", "Adjust balance"]
+                  "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary"],
+                  "Altro": ["Correzioni", "Prelievo", "Trasferimento", "Correzioni",
+                            "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder", "Adjust balance",
+                            "Check Balance"]
                   }
 
     expense_groups = {
         "Redditi": {
-            "Income": ["Salary", "Interessi, Dividendi", "Refunds"]
+            "Income": ["Salary", "Interessi & Dividendi", "Refunds"]
         },
         "Essenziali_Dovute": {
             "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family", "Affitto/Mutuo"],
@@ -33,9 +34,9 @@ class CategoryStructure:
             "Fun & Hobbies": ["Electronics", "Fun", "Hobby", "Adjust balance", "Unexpected"],
             "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
         },
-        "Nulle_to_del": {
-            "Da cancellare": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento", "Beni immobili",
-                              "Entrate da affitto", "Prelievo", "Work", "Placeholder"]
+        "Nulle": {
+            "Nulle": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento", "Beni immobili",
+                       "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"]
         }
     }
 
@@ -55,6 +56,10 @@ class CategoryStructure:
     def get_expenses_groups():
         CategoryStructure.check_expense_group()
         return CategoryStructure.expense_groups
+
+    @staticmethod
+    def get_expense_to_del():
+        return CategoryStructure.expense_groups["Nulle"]["Nulle"]
 
     @staticmethod
     def check_expense_group():

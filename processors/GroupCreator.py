@@ -33,7 +33,9 @@ class GroupCreator:
                 sub_group_name_out = 0
                 sub_group_name_savings = 0
                 for category_name in self.expense_groups[group_name][sub_group_name]:
+                    sub_group_name_in += data.df.loc[category_name]["in"]
                     sub_group_name_out += data.df.loc[category_name]["out"]
+                    sub_group_name_savings += data.df.loc[category_name]["savings"]
                     group_results.append(category_name, data.df.loc[category_name]["in"],
                                          data.df.loc[category_name]["out"], data.df.loc[category_name]["savings"])
                 group_results.append(sub_group_name, sub_group_name_in, sub_group_name_out, sub_group_name_savings)

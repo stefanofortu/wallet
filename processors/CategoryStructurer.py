@@ -17,9 +17,9 @@ class CategoryStructurer:
             main_cat_out = 0
             main_cat_savings = 0
             for category in self.main_category[main_category]:
-                main_cat_in += data.df.loc[category]["out"]
+                main_cat_in += data.df.loc[category]["in"]
                 main_cat_out += data.df.loc[category]["out"]
-                main_cat_savings += data.df.loc[category]["out"]
+                main_cat_savings += data.df.loc[category]["savings"]
 
                 main_category_results.append(category, data.df.loc[category]["in"],
                                              data.df.loc[category]["out"], data.df.loc[category]["savings"])

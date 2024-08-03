@@ -1,7 +1,7 @@
 import pandas as pd
 
 from data.WalletData import WalletData
-
+from data.CategoryStructure import CategoryStructure
 
 class DataImporter:
 
@@ -33,7 +33,7 @@ class DataImporter:
 
     def select_personal_accounts(self):
         all_accounts = self.wallet_data.df['account'].unique()
-        accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays"])
+        accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays", "BPM"])
         account_to_be_removed = list(set(all_accounts) - set(accounts_to_keep))
         for account in account_to_be_removed:
             self.wallet_data.df = self.wallet_data.df.drop(
@@ -53,7 +53,7 @@ class DataImporter:
                 filtered_data = self.wallet_data.df[(self.wallet_data.df["labels"] != "in") &
                                                     (self.wallet_data.df["labels"] != "out") &
                                                     (self.wallet_data.df["labels"] != "risparmi")]
-                print(filtered_data[['date','account', 'category', 'labels']])
+                print(filtered_data[['date', 'account', 'category', 'labels']])
                 raise ValueError('Label not in/out/savings')
 
     def filter_data_by_time(self):
@@ -62,17 +62,21 @@ class DataImporter:
             raise TypeError
 
         try:
-            timestamp_start_date = pd.Timestamp(self.start_date)
-        except:
-            print("Error in timestamp_start_date()")
+            timestamp_start_date = pd.Timestamp(self.start_date + " " + "00:00:00")
+        except Exception as e:
+            print("Error in timestamp_start_date()", e)
             raise TypeError
 
         try:
-            timestamp_end_date = pd.Timestamp(self.end_date)
-        except:
-            print("Error in timestamp_end_date()")
+            timestamp_end_date = pd.Timestamp(self.end_date + " " +"23:59:59")
+        except Exception as e:
+            print("Error in timestamp_end_date()", e)
             raise TypeError
-        filtered_data = self.wallet_data.df[(self.wallet_data.df["date"] > timestamp_start_date) &
-                                            (self.wallet_data.df["date"] < timestamp_end_date)]
+
+
+        filtered_data = self.wallet_data.df[(self.wallet_data.df["date"] >= timestamp_start_date) &
+                                            (self.wallet_data.df["date"] <= timestamp_end_date)]
         filtered_data.reset_index(inplace=True)
         self.wallet_data.df = filtered_data
+
+

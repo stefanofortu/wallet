@@ -50,19 +50,29 @@ class ExcelWriter:
                 self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
                 row_num += 1
 
-        row_num += 3
+        self.ws.write(row_num, 0, "-")
+        self.ws.write(row_num, 1, "-")
+        self.ws.write(row_num, 2, "-")
+        self.ws.write(row_num, 3, "-")
+        row_num += 1
         for main_group in list(CategoryStructure.expense_groups.keys()):
             self.ws.write(row_num, 0, main_group)
-            self.ws.write(row_num, 1, group_results.df.loc[main_group]["out"])
+            self.ws.write(row_num, 1, group_results.df.loc[main_group]["in"])
+            self.ws.write(row_num, 2, group_results.df.loc[main_group]["out"])
+            self.ws.write(row_num, 3, group_results.df.loc[main_group]["savings"])
             self.ws.set_row(row_num, None, None, {'collapsed': True})
             row_num += 1
             for sub_group in CategoryStructure.expense_groups[main_group].keys():
                 self.ws.write(row_num, 0, sub_group)
-                self.ws.write(row_num, 1, group_results.df.loc[sub_group]["out"])
+                self.ws.write(row_num, 1, group_results.df.loc[sub_group]["in"])
+                self.ws.write(row_num, 2, group_results.df.loc[sub_group]["out"])
+                self.ws.write(row_num, 3, group_results.df.loc[sub_group]["savings"])
                 self.ws.set_row(row_num, None, None, {'level': 1, 'hidden': True})
                 row_num += 1
                 for cat in list(CategoryStructure.expense_groups[main_group][sub_group]):
                     self.ws.write(row_num, 0, cat)
-                    self.ws.write(row_num, 1, group_results.df.loc[cat]["out"])
+                    self.ws.write(row_num, 1, group_results.df.loc[cat]["in"])
+                    self.ws.write(row_num, 2, group_results.df.loc[cat]["out"])
+                    self.ws.write(row_num, 3, group_results.df.loc[cat]["savings"])
                     self.ws.set_row(row_num, None, None, {'level': 2, 'hidden': True})
                     row_num += 1
