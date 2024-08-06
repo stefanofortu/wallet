@@ -1,5 +1,7 @@
+from datetime import datetime
+
 import pandas as pd
-import xlsxwriter
+import openpyxl
 
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
@@ -8,18 +10,30 @@ from win32com.client import Dispatch
 
 
 class ExcelWriter:
-    def __init__(self, filename, sheetname):
-        self.filename = filename
+    def __init__(self, filename_in, sheetname):
+        self.filename_in = filename_in
         self.sheetname = sheetname
+        self.filename_out = self.create_output_name()
 
-        self.wb = xlsxwriter.Workbook(self.filename)
-        self.ws = self.wb.add_worksheet(self.sheetname)
-        self.ws.outline_settings(symbols_below=False)
-        self.writer = pd.ExcelWriter(self.filename, engine='xlsxwriter')
+        self.wb = openpyxl.load_workbook(self.filename_in)
+        self.ws = self.wb.get_sheet_by_name(self.sheetname)
+        #self.ws.outline_settings(symbols_below=False)
+        #self.writer = pd.ExcelWriter(self.filename_in, engine='xlsxwriter')
+
+
+    def create_output_name(self):
+        filename_in_no_extension = self.filename_in.split(".")[0]
+        extension = self.filename_in.split(".")[1]
+        base_name = filename_in_no_extension.split("_v")[0]
+        version = int(filename_in_no_extension.split("_v")[1])
+        filename = str(datetime.now().strftime("%Y%m%d_%Hh%Mm%Ss"))
+        filename_out = base_name + "_" + str(version).zfill(2) + "_" + filename + "." + extension
+        return filename_out
 
     def __del__(self):
-        self.ws.autofit()
-        self.wb.close()
+        #self.ws.autofit()
+        #self.wb.close()
+        pass
 
     def process(self, main_category_results, group_results):
         if not isinstance(main_category_results, CategoryResults):
@@ -29,12 +43,23 @@ class ExcelWriter:
             print("ExcelWriter.process(): Wrong input type for data group_results")
             raise TypeError
 
-        row_num = 0
-        self.ws.write(row_num, 0, "Categories")
-        self.ws.write(row_num, 1, "in")
-        self.ws.write(row_num, 2, "out")
-        self.ws.write(row_num, 3, "savings")
+        _category_column = 1
+        _in_column = 2
+        _out_column = 3
+        _savings_column = 4
+
+        row_num = 1
+        self.ws.cell(row=row_num, column=_category_column).value  ="Categories"
+        self.ws.cell(row_num, _in_column, "in")
+        self.ws.cell(row_num, _out_column, "out")
+        self.ws.cell(row_num, _savings_column, "savings")
         row_num += 1
+
+        print(self.filename_out)
+        self.wb.save(self.filename_out)
+        self.wb.close()
+        exit()
+        return
         for main_cat in list(CategoryStructure.categories.keys()):
             self.ws.write(row_num, 0, main_cat)
             self.ws.write(row_num, 1, main_category_results.df.loc[main_cat]["in"])
