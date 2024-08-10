@@ -8,8 +8,7 @@ class GroupCreator:
 
     def process(self, data):
         if not isinstance(data, CategoryResults):
-            print("CategoryHierarchy.process(): Wrong input type for data")
-            raise TypeError
+            raise TypeError("GroupCreator.process(): Wrong input type for data")
 
         all_categories_of_expense_groups = []
         for expense_groups_name in self.expense_groups.keys():
@@ -45,3 +44,14 @@ class GroupCreator:
             group_results.append(group_name, main_category_in, main_category_out, main_category_savings)
 
         return group_results
+
+    def check_amounts(self,group_results):
+        if not isinstance(group_results, CategoryResults):
+            raise TypeError("GroupCreator.check_amounts(): Wrong input type for data")
+
+        for group_name in self.expense_groups.keys():
+            if (group_results.df.loc[group_name]["in"] != 0) & (group_results.df.loc[group_name]["out"] != 0):
+                print(group_name, "--> in:", group_results.df.loc[group_name]["in"], "out:",
+                      group_results.df.loc[group_name]["out"])
+                raise TypeError("GroupCreator.process(): in/out/saving distribution not valid")
+

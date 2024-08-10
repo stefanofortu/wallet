@@ -7,10 +7,10 @@ from datetime import datetime
 
 
 def wallet_process_app():
-    time_period = "2022"
+    time_period = "2024"
     try:
         data_import = DataImporter(
-            filename="C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-08-06_190957.xls",
+            filename="C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-08-10_163614.xls",
             year=time_period,
             # start_date="2023-12-25",
             # end_date="2023-12-31"
@@ -37,16 +37,18 @@ def wallet_process_app():
     try:
         group_creator = GroupCreator()
         group_results = group_creator.process(wallet_category_results)
+
     except Exception as e:
         print("GroupCreator(): ", e)
         exit()
-
-    try:
-        excel_writer = ExcelWriter("Piano_Spesa_v6.xlsx", time_period)
-        excel_writer.process(main_category_results, group_results)
-    except Exception as e:
-        print("ExcelWriter(): ", e)
-        exit()
+    group_creator.check_amounts(group_results)
+    #try:
+    excel_writer = ExcelWriter("Piano_Spesa_BASE_v02.xlsx", time_period)
+    excel_writer.write_main_category_results(main_category_results)
+    excel_writer.write_group_results(group_results)
+    #except Exception as e:
+    #    print("ExcelWriter(): ", e)
+    #    exit()
 
 
 if __name__ == '__main__':

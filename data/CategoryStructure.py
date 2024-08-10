@@ -20,7 +20,7 @@ class CategoryStructure:
             "Income": ["Salary", "Interessi & Dividendi", "Refunds"]
         },
         "Essenziali_Dovute": {
-            "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family", "Affitto/Mutuo"],
+            "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family"],
             "Macchina": ["Assicurazione veicoli", "Manutenzione veicoli"],
             "Salute_Beneficienza": ["Salute", "Beneficienza"]
         },
@@ -34,8 +34,11 @@ class CategoryStructure:
             "Fun & Hobbies": ["Electronics", "Fun", "Hobby", "Adjust balance", "Unexpected"],
             "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
         },
+        "Affitto/Mutuo": {
+                     "Affitto/Mutuo": ["Affitto/Mutuo",  "Beni immobili"]
+        },
         "Nulle": {
-            "Nulle": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento", "Beni immobili",
+            "Nulle": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
                        "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"]
         }
     }
@@ -55,6 +58,10 @@ class CategoryStructure:
     @staticmethod
     def get_expenses_groups():
         CategoryStructure.check_expense_group()
+        print("Verificare 'Beni Immobiliì' nel gruppo Entrate")
+        print("Migliora il check expenses per evitare doppioni")
+        print("Aggiungere due ulteriori gruppi: IN, Income_risparrmi, Out, Expense_risparmi")
+
         return CategoryStructure.expense_groups
 
     @staticmethod
