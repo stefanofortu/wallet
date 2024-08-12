@@ -35,7 +35,9 @@ class CategoryImporter:
             filtered_data_savings.reset_index(inplace=True)
             amount_savings = round(filtered_data_savings['amount'].sum(), 2)
 
-            category_results.append(category, amount_in, amount_out, amount_savings)
+            category_results.append(category,
+                                    amount_in=amount_in, amount_savings_in=0,
+                                    amount_out=amount_out, amount_savings_out=amount_savings)
 
         return category_results
 

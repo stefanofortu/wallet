@@ -8,8 +8,7 @@ class CategoryStructurer:
 
     def process(self, data):
         if not isinstance(data, CategoryResults):
-            print("CategoryHierarchy.process(): Wrong input type for data")
-            raise TypeError
+            raise TypeError("CategoryHierarchy.process(): Wrong input type for data")
 
         main_category_results = CategoryResults()
         for main_category in self.main_category.keys():
@@ -19,9 +18,14 @@ class CategoryStructurer:
             for category in self.main_category[main_category]:
                 main_cat_in += data.df.loc[category]["in"]
                 main_cat_out += data.df.loc[category]["out"]
-                main_cat_savings += data.df.loc[category]["savings"]
+                main_cat_savings += data.df.loc[category]["savings_out"]
 
-                main_category_results.append(category, data.df.loc[category]["in"],
-                                             data.df.loc[category]["out"], data.df.loc[category]["savings"])
-            main_category_results.append(main_category, main_cat_in, main_cat_out, main_cat_savings)
+                main_category_results.append(category,
+                                             amount_in=data.df.loc[category]["in"],
+                                             amount_savings_in=0,
+                                             amount_out=data.df.loc[category]["out"],
+                                             amount_savings_out=data.df.loc[category]["savings_out"])
+            main_category_results.append(main_category,
+                                         amount_in=main_cat_in, amount_savings_in=0,
+                                         amount_out=main_cat_out, amount_savings_out=main_cat_savings)
         return main_category_results
