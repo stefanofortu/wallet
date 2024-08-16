@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 def wallet_process_app():
-    time_period = "2024"
+    time_period = "2023"
     try:
         data_import = DataImporter(
             filename="C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel\\report_2024-08-10_163614.xls",
