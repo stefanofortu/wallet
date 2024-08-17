@@ -46,6 +46,9 @@ def wallet_process_app():
     excel_writer = ExcelWriter("Piano_Spesa_BASE_v02.xlsx", time_period)
     excel_writer.write_main_category_results(main_category_results)
     excel_writer.write_group_results(group_results)
+
+    #excel_writer = ExcelWriter("Piano_Spesa_BASE_v02.xlsx", time_period)
+
     #except Exception as e:
     #    print("ExcelWriter(): ", e)
     #    exit()
