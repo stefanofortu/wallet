@@ -16,7 +16,7 @@ class CategoryImporter:
         print("Verificare che tutte le label out siano <= 0")
         print("Verificare che tutte le Income  siano <= 0")
         print("Verificare che tutte le altre expense siano <= 0")
-
+        print("Sistemare la parte di 'amount_savings>0 sotto")
         self.check_categories_name(data)
         self.verify_to_del_categories(data)
 
@@ -35,10 +35,16 @@ class CategoryImporter:
             filtered_data_savings.reset_index(inplace=True)
             amount_savings = round(filtered_data_savings['amount'].sum(), 2)
 
-            category_results.append(category,
-                                    amount_in=amount_in, amount_savings_in=0,
-                                    amount_out=amount_out, amount_savings_out=amount_savings)
+            if amount_savings >= 0:
+                amount_savings_in = amount_savings
+                amount_savings_out = 0
+            else:
+                amount_savings_in = 0
+                amount_savings_out = amount_savings
 
+            category_results.append(category,
+                                    amount_in=amount_in, amount_savings_in=amount_savings_in,
+                                    amount_out=amount_out, amount_savings_out=amount_savings_out)
         return category_results
 
     """ check_categories_name
@@ -49,7 +55,7 @@ class CategoryImporter:
         categories_in_df = (list(data.df["category"].unique()))
         categories_excess = list(set(categories_in_df) - set(self.all_category))
         if len(categories_excess) > 0:
-            raise TypeError("CategoryImport.check_categories_name() - more categories in import file, ",
+            raise TypeError("CategoryImporter.check_categories_name() - more categories in import file, ",
                             categories_excess)
 
     def verify_to_del_categories(self, data):

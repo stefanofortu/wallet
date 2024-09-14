@@ -1,3 +1,4 @@
+import shutil
 from datetime import datetime
 import openpyxl
 from openpyxl.styles import Alignment, Font
@@ -6,13 +7,27 @@ from data.CategoryStructure import CategoryStructure
 
 
 class ExcelWriter:
-    def __init__(self, filename_in, sheetname):
+    def __init__(self, filename_in, template_sheetname, output_sheet_name):
         self.filename_in = filename_in
-        self.sheetname = sheetname
+        self.sheetname = output_sheet_name
         self.filename_out = self.create_output_name()
 
-        self.wb = openpyxl.load_workbook(self.filename_in)
-        self.ws = self.wb.get_sheet_by_name(self.sheetname)
+        self.create_output_file()
+        self.wb = openpyxl.load_workbook(self.filename_out)
+
+        # OPTION 1 to create a new sheet from template
+        # ws_template = self.wb.get_sheet_by_name(template_sheetname)
+        # self.ws = self.wb.copy_worksheet(ws_template)
+        # self.ws.title = self.sheetname
+
+        # OPTION 2 to modify an existing wb
+        self.ws = self.wb.get_sheet_by_name(template_sheetname)
+        self.ws.title = self.sheetname
+        self.ws.sheet_properties.tabColor = "FFFF00"
+
+        self.move_sheet_tab_to_end()
+        self.delete_all_other_sheets()
+
         self.ws.sheet_properties.outlinePr.summaryBelow = False
 
         # self.writer = pd.ExcelWriter(self.filename_in, engine='xlsxwriter')
@@ -25,6 +40,35 @@ class ExcelWriter:
         filename = str(datetime.now().strftime("%Y%m%d_%Hh%Mm%Ss"))
         filename_out = base_name + "_v" + str(version).zfill(2) + "_" + filename + "." + extension
         return filename_out
+
+    def create_output_file(self):
+        try:
+            shutil.copy(self.filename_in, self.filename_out)
+        except shutil.SameFileError:
+            print("Source and destination represents the same file.")
+        except PermissionError:
+            print("Permission denied.")
+        except:
+            print("Error occurred while copying file.")
+
+    def move_sheet_tab_to_end(self):
+        sheets = self.wb.sheetnames
+        # Remove the sheet from its current position
+        sheets.remove(self.ws.title)
+
+        # Insert the sheet at the last position
+        sheets.append(self.ws.title)
+
+        # Reorder the sheets in the workbook
+        self.wb._sheets = [self.wb[sheet] for sheet in sheets]
+
+        self.wb.active = self.wb.sheetnames.index(self.ws.title)
+
+    def delete_all_other_sheets(self):
+        for sheet_name in self.wb.sheetnames:
+            if sheet_name != self.ws.title:
+                sheet_to_delete = self.wb[sheet_name]
+                self.wb.remove(sheet_to_delete)
 
     def __del__(self):
         self.wb.save(self.filename_out)
@@ -40,7 +84,7 @@ class ExcelWriter:
         out_column = 4
         savings_out_column = 5
 
-        row_num = 200
+        row_num = 125
         self.ws.cell(row_num, category_column).value = "Categories"
         self.ws.cell(row_num, in_column, "in")
         self.ws.cell(row_num, savings_in_column, "savings in")
@@ -101,8 +145,7 @@ class ExcelWriter:
         out_column = 4
         savings_out_column = 5
         excel_structure = {"level1": [], "level2": []}
-        row_num = 1
-        print(group_results)
+        row_num = 50
 
         self.ws.cell(row_num, category_column).value = "Categories"
         self.ws.cell(row_num, in_column, "in")
@@ -160,3 +203,6 @@ class ExcelWriter:
             for col in [in_column, savings_in_column, out_column, savings_out_column]:
                 self.ws.cell(r_num, col).number_format = "#,##0 [$€-2]"
                 self.ws.cell(r_num, col).alignment = Alignment(horizontal="right", vertical="center")
+
+        if row_num > 130:
+            print("ExcelWriter::write_group_results() - out of boundary box for group results results")

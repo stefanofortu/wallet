@@ -9,7 +9,7 @@ class CategoryStructure:
                   "Travel & Holidays": ["Summer Holidays", "Weekends"],
                   "Spese finanziarie": ["Beneficienza", "Salute"],
                   "Investimenti": ["Education", "Work", "Beni immobili", "Education_New", "Work_New"],
-                  "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary"],
+                  "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary", "Regali"],
                   "Altro": ["Correzioni", "Prelievo", "Trasferimento", "Correzioni",
                             "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder", "Adjust balance",
                             "Check Balance"]
@@ -17,7 +17,7 @@ class CategoryStructure:
 
     expense_groups = {
         "Redditi": {
-            "Income": ["Salary", "Interessi & Dividendi", "Refunds"]
+            "Income": ["Salary", "Interessi & Dividendi", "Refunds", "Regali"]
         },
         "Essenziali_Dovute": {
             "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family"],
@@ -34,11 +34,12 @@ class CategoryStructure:
             "Fun & Hobbies": ["Electronics", "Fun", "Hobby", "Adjust balance", "Unexpected"],
             "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
         },
-        "Affitto/Mutuo": {
-                     "Affitto/Mutuo": ["Affitto/Mutuo",  "Beni immobili"]
+        "Spese_Fisse": {
+            "Spese_Immobiliari": ["Affitto/Mutuo",  "Beni immobili"],
+            "Rate_Auto": []
         },
         "Nulle": {
-            "Nulle": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
+            "Spese_a_zero": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
                        "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"]
         }
     }
@@ -66,7 +67,7 @@ class CategoryStructure:
 
     @staticmethod
     def get_expense_to_del():
-        return CategoryStructure.expense_groups["Nulle"]["Nulle"]
+        return CategoryStructure.expense_groups["Nulle"]["Spese_a_zero"]
 
     @staticmethod
     def check_expense_group():
