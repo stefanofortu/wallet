@@ -25,27 +25,38 @@ class GroupCreator:
         group_results = CategoryResults()
         for group_name in self.expense_groups.keys():
             main_category_in = 0
+            main_category_savings_in = 0
             main_category_out = 0
-            main_category_savings = 0
+            main_category_savings_out = 0
             for sub_group_name in self.expense_groups[group_name].keys():
                 sub_group_name_in = 0
+                sub_group_name_savings_in = 0
                 sub_group_name_out = 0
-                sub_group_name_savings = 0
+                sub_group_name_savings_out = 0
                 for category_name in self.expense_groups[group_name][sub_group_name]:
                     sub_group_name_in += data.df.loc[category_name]["in"]
+                    sub_group_name_savings_in += data.df.loc[category_name]["savings_in"]
                     sub_group_name_out += data.df.loc[category_name]["out"]
-                    sub_group_name_savings += data.df.loc[category_name]["savings"]
-                    group_results.append(category_name, data.df.loc[category_name]["in"],
-                                         data.df.loc[category_name]["out"], data.df.loc[category_name]["savings"])
-                group_results.append(sub_group_name, sub_group_name_in, sub_group_name_out, sub_group_name_savings)
+                    sub_group_name_savings_out += data.df.loc[category_name]["savings_out"]
+                    group_results.append(category_name,
+                                         amount_in=data.df.loc[category_name]["in"],
+                                         amount_savings_in=data.df.loc[category_name]["savings_in"],
+                                         amount_out=data.df.loc[category_name]["out"],
+                                         amount_savings_out=data.df.loc[category_name]["savings_out"])
+                group_results.append(sub_group_name,
+                                     amount_in=sub_group_name_in, amount_savings_in=sub_group_name_savings_in,
+                                     amount_out=sub_group_name_out, amount_savings_out=sub_group_name_savings_out)
                 main_category_in += sub_group_name_in
+                main_category_savings_in += sub_group_name_savings_in
                 main_category_out += sub_group_name_out
-                main_category_savings += sub_group_name_savings
-            group_results.append(group_name, main_category_in, main_category_out, main_category_savings)
+                main_category_savings_out += sub_group_name_savings_out
+            group_results.append(group_name,
+                                 amount_in=main_category_in, amount_savings_in=main_category_savings_in,
+                                 amount_out=main_category_out, amount_savings_out=main_category_savings_out)
 
         return group_results
 
-    def check_amounts(self,group_results):
+    def check_amounts(self, group_results):
         if not isinstance(group_results, CategoryResults):
             raise TypeError("GroupCreator.check_amounts(): Wrong input type for data")
 
@@ -54,4 +65,3 @@ class GroupCreator:
                 print(group_name, "--> in:", group_results.df.loc[group_name]["in"], "out:",
                       group_results.df.loc[group_name]["out"])
                 raise TypeError("GroupCreator.process(): in/out/saving distribution not valid")
-
