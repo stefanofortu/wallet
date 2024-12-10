@@ -3,6 +3,7 @@ import pandas as pd
 from data.WalletData import WalletData
 from data.CategoryStructure import CategoryStructure
 
+
 class DataImporter:
 
     def __init__(self, filename, year=None, start_date=None, end_date=None, ):
@@ -68,15 +69,12 @@ class DataImporter:
             raise TypeError
 
         try:
-            timestamp_end_date = pd.Timestamp(self.end_date + " " +"23:59:59")
+            timestamp_end_date = pd.Timestamp(self.end_date + " " + "23:59:59")
         except Exception as e:
             print("Error in timestamp_end_date()", e)
             raise TypeError
-
 
         filtered_data = self.wallet_data.df[(self.wallet_data.df["date"] >= timestamp_start_date) &
                                             (self.wallet_data.df["date"] <= timestamp_end_date)]
         filtered_data.reset_index(inplace=True)
         self.wallet_data.df = filtered_data
-
-
