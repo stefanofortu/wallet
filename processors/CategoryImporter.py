@@ -12,6 +12,7 @@ class CategoryImporter:
             print("get_data_by_category(): Wrong input type for data")
             raise TypeError("get_data_by_category(): Wrong input type for data")
 
+        print(data.df.head())
         print("Verificare che tutte le label in siano >= 0")
         print("Verificare che tutte le label out siano <= 0")
         print("Verificare che tutte le Income  siano <= 0")
@@ -19,6 +20,9 @@ class CategoryImporter:
         print("Sistemare la parte di 'amount_savings>0 sotto")
         self.check_categories_name(data)
         self.verify_to_del_categories(data)
+        self.check_all_labels_value(data=data, label="in", sign="positive")
+        self.check_all_labels_value(data=data, label="out", sign="negative")
+        self.check_all_labels_value(data=data, label="risparmi", sign="negative")
 
         data.df.amount = data.df.amount.round(2)
         category_results = CategoryResults()
@@ -66,3 +70,28 @@ class CategoryImporter:
             print("Some of the expenses that should be zero are populated")
             print(filtered_data[["date", "account", "category", "amount", "labels"]])
             exit()
+
+    def check_all_labels_value(self, data, label, sign):
+        if not isinstance(data, WalletData):
+            print("check_all_labels_are_positive(): Wrong input type for data")
+            raise TypeError("check_all_labels_are_positive(): Wrong input type for data")
+        if sign == "positive":
+            df_results = (data.df[data.df["labels"] == label]).loc[:, ["amount"]] >= 0
+        elif sign == "negative":
+            df_results = (data.df[data.df["labels"] == label]).loc[:, ["amount"]] <= 0
+        else:
+            raise TypeError("CategoryImporter.check_all_labels_value() - sign parameters incorrect",
+                            sign)
+
+        result = df_results.all(axis=None)
+        if not result:
+            print("Found transactions where label %s is not %s" % (label, sign))
+            indexes = df_results.index[df_results["amount"] is False]
+            print(indexes)
+            print("df_results", data.df.iloc[indexes])
+            print("result", result)
+            print("=============================================")
+            exit()
+
+    def check_all_labels_are_negative(self, ):
+        pass
