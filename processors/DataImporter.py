@@ -12,6 +12,7 @@ class DataImporter:
         self.wallet_data = None
         self.import_file()
         self.select_personal_accounts()
+        self.remove_transfers()
 
         if year is not None:
             self.start_date = year + "-01-01"
@@ -47,16 +48,23 @@ class DataImporter:
         if len(account_remained) > 0:
             print("The following accounts are not present", account_remained)
 
+
+    def remove_transfers(self):
+        print("removing all transfers - temporary")
+        self.wallet_data.df.drop(self.wallet_data.df[self.wallet_data.df["category"] == "TRANSFER"].index, inplace=True)
+        self.wallet_data.df.reset_index(inplace=True, drop=True)
+
+
     def verify_single_label(self):
         labels_imported = self.wallet_data.df['labels'].unique()
         wrong_label = False
         empty_label = False
         for label in labels_imported:
-            if isinstance(label,str):
+            if isinstance(label, str):
                 if label != "in" and label != "out" and label != "risparmi":
                     wrong_label = True
             else:
-                if math.isnan(label): # (labels_imported.isna()).any(axis=None):
+                if math.isnan(label):  # (labels_imported.isna()).any(axis=None):
                     empty_label = True
 
         if empty_label or wrong_label:

@@ -74,8 +74,6 @@ class CategoryStructure:
     @staticmethod
     def get_expenses_groups():
         CategoryStructure.check_expense_group()
-        print("Aggiungere due ulteriori gruppi: IN, Income_risparmi, Out, Expense_risparmi")
-
         return CategoryStructure.expense_groups
 
     @staticmethod

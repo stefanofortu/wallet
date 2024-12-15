@@ -7,6 +7,9 @@ class CategoryImporter:
     def __init__(self):
         self.all_category = CategoryStructure.get_basic_categories()
 
+        print("gestire i trasferimenti per ora sono automaticamente rimossi")
+        print("Aggiungere due ulteriori gruppi: IN, Income_risparmi, Out, Expense_risparmi. Da gestire correttamente")
+
     def process(self, data):
         if not isinstance(data, WalletData):
             print("get_data_by_category(): Wrong input type for data")
@@ -57,8 +60,7 @@ class CategoryImporter:
             raise TypeError("CategoryImporter.check_categories_name() - more categories in import file, ",
                             categories_excess)
 
-    @staticmethod
-    def verify_to_del_categories(data):
+    def verify_to_del_categories(self, data):
         category_to_del = CategoryStructure.get_expense_to_del()
         filtered_data = data.df.loc[data.df['category'].isin(category_to_del) & data.df['amount'] != 0]
         filtered_data.reset_index(inplace=True, drop=True)
@@ -67,8 +69,7 @@ class CategoryImporter:
             print(filtered_data[["date", "account", "category", "amount", "labels"]])
             exit()
 
-    @staticmethod
-    def check_all_labels_sign(data, label, sign):
+    def check_all_labels_sign(self, data, label, sign):
         if not isinstance(data, WalletData):
             print("check_all_labels_are_positive(): Wrong input type for data")
             raise TypeError("check_all_labels_are_positive(): Wrong input type for data")
@@ -95,6 +96,7 @@ class CategoryImporter:
         if not isinstance(data, WalletData):
             print("check_all_category_sign(): Wrong input type for data")
             raise TypeError("check_all_category_sign(): Wrong input type for data")
+
         if sign == "positive":
             category_list = CategoryStructure.get_income_categories()
             df_results = data.df.loc[(data.df["category"].isin(category_list)) &
