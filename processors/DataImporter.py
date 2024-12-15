@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 
 from data.WalletData import WalletData
 from data.CategoryStructure import CategoryStructure
@@ -48,14 +49,26 @@ class DataImporter:
 
     def verify_single_label(self):
         labels_imported = self.wallet_data.df['labels'].unique()
+        wrong_label = False
+        empty_label = False
         for label in labels_imported:
-            if label != "in" and label != "out" and label != "risparmi":
-                print("all labels imported:", labels_imported)
-                filtered_data = self.wallet_data.df[(self.wallet_data.df["labels"] != "in") &
-                                                    (self.wallet_data.df["labels"] != "out") &
-                                                    (self.wallet_data.df["labels"] != "risparmi")]
-                print(filtered_data[['date', 'account', 'category', 'labels']])
-                raise ValueError('Label not in/out/savings')
+            if isinstance(label,str):
+                if label != "in" and label != "out" and label != "risparmi":
+                    wrong_label = True
+            else:
+                if math.isnan(label): # (labels_imported.isna()).any(axis=None):
+                    empty_label = True
+
+        if empty_label or wrong_label:
+            print("all labels imported:", labels_imported)
+            filtered_data = self.wallet_data.df[(self.wallet_data.df["labels"] != "in") &
+                                                (self.wallet_data.df["labels"] != "out") &
+                                                (self.wallet_data.df["labels"] != "risparmi")]
+            print(filtered_data[['date', 'account', 'category', 'labels']])
+            if wrong_label:
+                raise ValueError('verify_single_label(). Label not in/out/savings')
+            if empty_label:
+                raise ValueError('verify_single_label(). Label empty')
 
     def filter_data_by_time(self):
         if not isinstance(self.wallet_data, WalletData):

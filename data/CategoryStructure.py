@@ -35,12 +35,12 @@ class CategoryStructure:
             "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
         },
         "Spese_Fisse": {
-            "Spese_Immobiliari": ["Affitto/Mutuo",  "Beni immobili"],
+            "Spese_Immobiliari": ["Affitto/Mutuo", "Beni immobili"],
             "Rate_Auto": []
         },
         "Nulle": {
             "Spese_a_zero": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
-                       "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"]
+                             "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"]
         }
     }
 
@@ -66,8 +66,17 @@ class CategoryStructure:
         return CategoryStructure.expense_groups
 
     @staticmethod
+    def get_income_categories():
+        return CategoryStructure.expense_groups["Redditi"]["Income"]
+
+    @staticmethod
+    def get_expense_categories():
+        return list([x for x in CategoryStructure.get_basic_categories()
+                     if x not in CategoryStructure.expense_groups["Redditi"]["Income"]])
+
+    @staticmethod
     def get_expense_to_del():
-        return CategoryStructure.expense_groups["Nulle"]["Spese_a_zero"]
+        return list(CategoryStructure.expense_groups["Nulle"]["Spese_a_zero"])
 
     @staticmethod
     def check_expense_group():
