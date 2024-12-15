@@ -12,7 +12,6 @@ class CategoryImporter:
             print("get_data_by_category(): Wrong input type for data")
             raise TypeError("get_data_by_category(): Wrong input type for data")
 
-        print("Sistemare la parte di 'amount_savings>0 sotto")
         self.check_categories_name(data)
         self.verify_to_del_categories(data)
         self.check_all_labels_sign(data=data, label="in", sign="positive")
