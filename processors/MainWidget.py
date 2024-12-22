@@ -37,7 +37,8 @@ class MainWidget(QWidget):
         year_selection_combobox_layout = QHBoxLayout()
         self.year_selection_combobox = QComboBox()
         self.year_selection_combobox.addItems([str(x) for x in range(2018, 2025)])
-        self.year_selection_combobox.setCurrentText("2023")
+        self.year_selection_combobox.setCurrentText(self.project_data.year_selected)
+        self.year_selection_combobox.currentTextChanged.connect(self.set_year_selected)
         year_selection_combobox_layout.addStretch(1)
         year_selection_combobox_layout.addWidget(self.year_selection_combobox, stretch=2)
         year_selection_combobox_layout.addStretch(1)
@@ -70,4 +71,8 @@ class MainWidget(QWidget):
         if fileName:
             print(fileName)
             self.input_file_path_label.setText(fileName)
-            self.project_data.input_file_name = fileName
+            self.project_data.set_input_file_name(input_filename=fileName)
+
+    def set_year_selected(self, text):
+        print("year_selection_combobox_changed", text)
+        self.project_data.set_year_selected(text)

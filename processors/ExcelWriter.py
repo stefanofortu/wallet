@@ -38,7 +38,7 @@ class ExcelWriter:
         base_name = filename_in_no_extension.split("_v")[0]
         version = int(filename_in_no_extension.split("_v")[1])
         filename = str(datetime.now().strftime("%Y%m%d_%Hh%Mm%Ss"))
-        filename_out = base_name + "_v" + str(version).zfill(2) + "_" + filename + "." + extension
+        filename_out = "output_files/" + base_name + "_v" + str(version).zfill(2) + "_" + filename + "." + extension
         return filename_out
 
     def create_output_file(self):

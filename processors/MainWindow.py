@@ -2,26 +2,54 @@ from PySide6.QtWidgets import QMainWindow
 from PySide6.QtGui import QIcon
 from icons.resources import resource_path
 from processors.MainWidget import MainWidget
+import json
 
 
 class Project_Data:
     def __init__(self):
+        self.project_file_name = "ProjectData.json"
         self.input_file_name = ""
-        self.year_selection_combobox = ""
+        self.year_selected = ""
+        self.read_project_file()
 
     def set_input_file_name(self, input_filename):
         self.input_file_name = input_filename
+        self.write_project_file()
 
-    def set_year_selection_combobox(self, year_selection_combobox):
-        self.year_selection_combobox = year_selection_combobox
+    def set_year_selected(self, year_selected):
+        self.year_selected = year_selected
+        self.write_project_file()
+
+    def read_project_file(self):
+        try:
+            with open(self.project_file_name, 'r') as in_file:
+                # Reading from json file
+                json_dict = json.load(in_file)
+                self.input_file_name = json_dict["input_file_name"]
+                self.year_selected = json_dict["year_selected"]
+        except OSError:
+            print("project file not found")
+            self.input_file_name = ""
+            self.year_selected = ""
+            self.write_project_file()
+        except:
+            print("Error in opening project file")
+
+    def write_project_file(self):
+        output_dict = {
+            "input_file_name": self.input_file_name,
+            "year_selected": self.year_selected
+        }
+
+        with open(self.project_file_name, "w") as out_file:
+            print("writing file")
+            json.dump(output_dict, out_file, indent=4)
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.project_data = Project_Data()
-        self.project_data.input_file_name = "C:/Users/Stefano/Documents/MEGA/MegaSync_Pixel/report_2024-09-08_175633.xls"
-        self.project_data.year_selection_combobox = "2023"
         self.setWindowTitle("Wallet check")
         self.left = 100
         self.top = 100

@@ -10,9 +10,6 @@ class DataImporter:
     def __init__(self, filename, year=None, start_date=None, end_date=None, ):
         self.input_filename = filename
         self.wallet_data = None
-        self.import_file()
-        self.select_personal_accounts()
-        self.remove_transfers()
 
         if year is not None:
             self.start_date = year + "-01-01"
@@ -24,6 +21,10 @@ class DataImporter:
             print("Error in year | start_data | end_date input")
             raise TypeError
 
+        self.import_file()
+        self.remove_transfers()
+
+        self.select_personal_accounts()
         self.filter_data_by_time()
         self.verify_single_label()
 
@@ -48,12 +49,11 @@ class DataImporter:
         if len(account_remained) > 0:
             print("The following accounts are not present", account_remained)
 
-
     def remove_transfers(self):
         print("removing all transfers - temporary")
-        self.wallet_data.df.drop(self.wallet_data.df[self.wallet_data.df["category"] == "TRANSFER"].index, inplace=True)
+        self.wallet_data.df.drop(self.wallet_data.df[self.wallet_data.df["category"] == "TRANSFER"].index,
+                                 inplace=True)
         self.wallet_data.df.reset_index(inplace=True, drop=True)
-
 
     def verify_single_label(self):
         labels_imported = self.wallet_data.df['labels'].unique()

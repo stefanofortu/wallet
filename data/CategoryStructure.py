@@ -5,7 +5,7 @@ class CategoryStructure:
                   "Trasporti": ["Trasporto pubblico"],
                   "Veicoli": ["Assicurazione veicoli", "Carburante", "Manutenzione veicoli", "Parking and Tolls"],
                   "Entertainment": ["Eventi", "Fun", "Hobby", "Personal Care",
-                                    "Sport & Fitness", "Summer Holidays", "Weekends"],
+                                    "Sport & Fitness"],#, "Summer Holidays", "Weekends"],
                   "Travel & Holidays": ["Summer Holidays", "Weekends"],
                   "Spese finanziarie": ["Beneficienza", "Salute"],
                   "Investimenti": ["Education", "Work", "Beni immobili", "Education_New", "Work_New"],
