@@ -10,6 +10,7 @@ class WalletData:
             raise TypeError
 
         self.df = data
+        self.df_transfers = None
         self.verify_currency()
         self.filter_out_columns()
 
@@ -32,3 +33,6 @@ class WalletData:
             print("more column than allowed in import file")
             raise ImportError
 
+    def fill_dataframe_transfers(self):
+        self.df_transfers = self.df[self.df['category'] == 'TRANSFER']
+        self.df = self.df[self.df['category'] != "TRANSFER"]

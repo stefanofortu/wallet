@@ -22,11 +22,11 @@ class DataImporter:
             raise TypeError
 
         self.import_file()
-        self.remove_transfers()
-
         self.select_personal_accounts()
         self.filter_data_by_time()
+        self.wallet_data.fill_dataframe_transfers()
         self.verify_single_label()
+        self.verify_single_label_for_transfers()
 
     def get_imported_data(self) -> WalletData:
         return self.wallet_data
@@ -48,12 +48,6 @@ class DataImporter:
         account_remained = list(set(accounts) ^ set(accounts_to_keep))
         if len(account_remained) > 0:
             print("The following accounts are not present", account_remained)
-
-    def remove_transfers(self):
-        print("removing all transfers - temporary")
-        self.wallet_data.df.drop(self.wallet_data.df[self.wallet_data.df["category"] == "TRANSFER"].index,
-                                 inplace=True)
-        self.wallet_data.df.reset_index(inplace=True, drop=True)
 
     def verify_single_label(self):
         labels_imported = self.wallet_data.df['labels'].unique()
@@ -77,6 +71,21 @@ class DataImporter:
                 raise ValueError('verify_single_label(). Label not in/out/savings')
             if empty_label:
                 raise ValueError('verify_single_label(). Label empty')
+
+    def verify_single_label_for_transfers(self):
+        labels_imported = self.wallet_data.df_transfers['labels'].unique()
+        wrong_label = False
+        for label in labels_imported:
+            if isinstance(label, str):
+                if label != "contabile":
+                    wrong_label = True
+
+        if wrong_label:
+            print("all labels found in TRASNFERS:", labels_imported)
+            df_no_nan = self.wallet_data.df_transfers.dropna(subset=['labels'])
+            filtered_data = df_no_nan[(df_no_nan["labels"] != "contabile")]
+            print(filtered_data[['date', 'account', 'category', 'labels']])
+            raise ValueError('verify_single_label_for_transfers(). Label not \'contabile\'')
 
     def filter_data_by_time(self):
         if not isinstance(self.wallet_data, WalletData):

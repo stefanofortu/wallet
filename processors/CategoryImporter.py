@@ -6,8 +6,6 @@ from data.WalletData import WalletData
 class CategoryImporter:
     def __init__(self):
         self.all_category = CategoryStructure.get_basic_categories()
-
-        print("gestire i trasferimenti per ora sono automaticamente rimossi")
         print("Aggiungere due ulteriori gruppi: IN, Income_risparmi, Out, Expense_risparmi. Da gestire correttamente")
 
     def process(self, data):

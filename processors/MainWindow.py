@@ -42,7 +42,6 @@ class Project_Data:
         }
 
         with open(self.project_file_name, "w") as out_file:
-            print("writing file")
             json.dump(output_dict, out_file, indent=4)
 
 

@@ -8,6 +8,7 @@ import processors.WalletProcessor
 from icons.resources import resource_path
 from processors.WalletProcessor import WalletProcessor
 
+
 class MainWidget(QWidget):
     def __init__(self, project_data):
         super().__init__()
@@ -74,5 +75,4 @@ class MainWidget(QWidget):
             self.project_data.set_input_file_name(input_filename=fileName)
 
     def set_year_selected(self, text):
-        print("year_selection_combobox_changed", text)
         self.project_data.set_year_selected(text)
