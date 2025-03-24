@@ -4,6 +4,9 @@ import openpyxl
 from openpyxl.styles import Alignment, Font
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class ExcelWriter:
@@ -45,11 +48,11 @@ class ExcelWriter:
         try:
             shutil.copy(self.filename_in, self.filename_out)
         except shutil.SameFileError:
-            print("Source and destination represents the same file.")
+            logger.error("Source and destination represents the same file.")
         except PermissionError:
-            print("Permission denied.")
+            logger.error("Permission denied.")
         except:
-            print("Error occurred while copying file.")
+            logger.error("Error occurred while copying file.")
 
     def move_sheet_tab_to_end(self):
         sheets = self.wb.sheetnames
@@ -205,4 +208,4 @@ class ExcelWriter:
                 self.ws.cell(r_num, col).alignment = Alignment(horizontal="right", vertical="center")
 
         if row_num > 130:
-            print("ExcelWriter::write_group_results() - out of boundary box for group results results")
+            logger.warning("ExcelWriter::write_group_results() - out of boundary box for group results results")

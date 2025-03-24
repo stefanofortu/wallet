@@ -1,4 +1,7 @@
 import pandas as pd
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class WalletData:
@@ -6,7 +9,7 @@ class WalletData:
         self.data_columns = ['account', 'category', 'amount', 'type', 'note', 'date', 'labels']
 
         if not isinstance(data, pd.DataFrame):
-            print("WalletData - init(): Wrong input type for data")
+            logger.error("WalletData - init(): Wrong input type for data")
             raise TypeError
 
         self.df = data
@@ -30,7 +33,7 @@ class WalletData:
         difference_column_list = list(set(self.data_columns) ^ set(column_list))
 
         if len(difference_column_list) > 0:
-            print("more column than allowed in import file")
+            logger.error("more column than allowed in import file")
             raise ImportError
 
     def fill_dataframe_transfers(self):

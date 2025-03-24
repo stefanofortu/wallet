@@ -107,25 +107,25 @@ class CategoryStructure:
             if all_basic_categories.count(cat) > 1:
                 duplicated_items.append(cat)
         if len(duplicated_items) > 0:
-            print("Found duplicated items in \'all_basic_categories\'", set(duplicated_items))
+            logger.warning("Found duplicated items in \'all_basic_categories\'", set(duplicated_items))
 
         duplicated_items = []
         for cat in all_categories_of_expense_groups:
             if all_categories_of_expense_groups.count(cat) > 1:
                 duplicated_items.append(cat)
         if len(duplicated_items) > 0:
-            print("Found duplicated items in all_categories_of_expense_groups", set(duplicated_items))
+            logger.warning("Found duplicated items in all_categories_of_expense_groups", set(duplicated_items))
 
         # if len(set(all_basic_categories)) != len(all_basic_categories):
         #  print("duplicates found in the list")
 
         ##### Check for duplicated items ############
         if len(set(all_categories_of_expense_groups)) != len(all_categories_of_expense_groups):
-            print("duplicates found in the list")
+            logger.error("duplicates found in the list")
 
         ##### Check for duplicated items ############
 
         category_difference = list(set(all_basic_categories) ^ set(all_categories_of_expense_groups))
         if len(category_difference) > 0:
-            print("CategoryStructure.check_expense_group(): error", category_difference)
+            logger.error("CategoryStructure.check_expense_group(): error", category_difference)
             raise TypeError

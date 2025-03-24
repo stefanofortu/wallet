@@ -1,12 +1,14 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFrame, QGridLayout, \
-    QFileDialog
-from PySide6.QtCore import QSize, Qt
+    QFileDialog, QTextBrowser
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QComboBox
-
-import processors.WalletProcessor
 from icons.resources import resource_path
 from processors.WalletProcessor import WalletProcessor
+from utils.LoggingStream import LoggingStream
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class MainWidget(QWidget):
@@ -46,7 +48,7 @@ class MainWidget(QWidget):
 
         widget_main_layout.addLayout(year_selection_combobox_layout)
 
-        ############### START SUBSTITUTION ###############
+        ############### ELABORATION  ###############
         exec_row_layout = QHBoxLayout()
         exec_row_layout.addStretch()
         btn_exec_tc_substitution = QPushButton("Start substitution")
@@ -57,6 +59,12 @@ class MainWidget(QWidget):
         exec_row_layout.addStretch()
 
         widget_main_layout.addLayout(exec_row_layout)
+
+        ############### LOGGING  ###############
+        logging_text_browser = QTextBrowser(self)
+        LoggingStream.stdout().messageWritten.connect(logging_text_browser.insertPlainText)
+        LoggingStream.stderr().messageWritten.connect(logging_text_browser.insertPlainText)
+        widget_main_layout.addWidget(logging_text_browser)
         ############### SET MAIN LAYOUT
         self.setLayout(widget_main_layout)
         ############### GUI END
@@ -70,7 +78,7 @@ class MainWidget(QWidget):
         fileName, _ = QFileDialog.getOpenFileName(self, "Select input xlsx file", "",
                                                   "All Files (*);;Excel Files (*.xlsx);;Excel Files (*.xls) ")
         if fileName:
-            print(fileName)
+            logger.info(fileName)
             self.input_file_path_label.setText(fileName)
             self.project_data.set_input_file_name(input_filename=fileName)
 

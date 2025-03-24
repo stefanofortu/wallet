@@ -1,5 +1,8 @@
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class GroupCreator:
@@ -19,7 +22,7 @@ class GroupCreator:
 
         category_difference = list(set(all_basic_categories) ^ set(all_categories_of_expense_groups))
         if len(category_difference) > 0:
-            print("differenza in categoria", category_difference)
+            logger.critical("differenza in categoria", category_difference)
             exit()
 
         group_results = CategoryResults()
@@ -62,6 +65,6 @@ class GroupCreator:
 
         for group_name in self.expense_groups.keys():
             if (group_results.df.loc[group_name]["in"] != 0) & (group_results.df.loc[group_name]["out"] != 0):
-                print(group_name, "--> in:", group_results.df.loc[group_name]["in"], "out:",
-                      group_results.df.loc[group_name]["out"])
+                logger.warning(group_name + str("--> in:") + group_results.df.loc[group_name]["in"]
+                               + str("out:") + str(group_results.df.loc[group_name]["out"]))
                 raise TypeError("GroupCreator.process(): in/out/saving distribution not valid")

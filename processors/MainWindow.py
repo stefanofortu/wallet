@@ -3,6 +3,9 @@ from PySide6.QtGui import QIcon
 from icons.resources import resource_path
 from processors.MainWidget import MainWidget
 import json
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class Project_Data:
@@ -28,12 +31,12 @@ class Project_Data:
                 self.input_file_name = json_dict["input_file_name"]
                 self.year_selected = json_dict["year_selected"]
         except OSError:
-            print("project file not found")
+            logger.error("project file not found")
             self.input_file_name = ""
             self.year_selected = ""
             self.write_project_file()
         except:
-            print("Error in opening project file")
+            logger.error("Error in opening project file")
 
     def write_project_file(self):
         output_dict = {
@@ -55,7 +58,7 @@ class MainWindow(QMainWindow):
         self.width = 360
         self.height = 120
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setStyleSheet("background-color: rgb(255,255,255)")
+        self.setStyleSheet("background-color: rgb(218,228,231)")
 
         self.main_widget = MainWidget(self.project_data)
         self.setCentralWidget(self.main_widget)

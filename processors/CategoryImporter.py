@@ -1,16 +1,20 @@
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
 from data.WalletData import WalletData
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class CategoryImporter:
     def __init__(self):
         self.all_category = CategoryStructure.get_basic_categories()
-        print("Aggiungere due ulteriori gruppi: IN, Income_risparmi, Out, Expense_risparmi. Da gestire correttamente")
+        logger.warning("Aggiungere due ulteriori gruppi: IN, Income_risparmi, Out, Expense_risparmi. Da gestire "
+                       "correttamente")
 
     def process(self, data):
         if not isinstance(data, WalletData):
-            print("get_data_by_category(): Wrong input type for data")
+            logger.error("get_data_by_category(): Wrong input type for data")
             raise TypeError("get_data_by_category(): Wrong input type for data")
 
         self.check_categories_name(data)
@@ -63,13 +67,13 @@ class CategoryImporter:
         filtered_data = data.df.loc[data.df['category'].isin(category_to_del) & data.df['amount'] != 0]
         filtered_data.reset_index(inplace=True, drop=True)
         if filtered_data.size > 0:
-            print("Some of the expenses that should be zero are populated")
-            print(filtered_data[["date", "account", "category", "amount", "labels"]])
+            logger.error("Some of the expenses that should be zero are populated: ",
+                         filtered_data[["date", "account", "category", "amount", "labels"]])
             exit()
 
     def check_all_labels_sign(self, data, label, sign):
         if not isinstance(data, WalletData):
-            print("check_all_labels_are_positive(): Wrong input type for data")
+            logger.error("check_all_labels_are_positive(): Wrong input type for data")
             raise TypeError("check_all_labels_are_positive(): Wrong input type for data")
         if sign == "positive":
             df_results = data.df.loc[(data.df["labels"] == label) &
@@ -84,7 +88,7 @@ class CategoryImporter:
                             sign)
 
         if not df_results.empty:
-            print("Found transactions where label %s is not %s" % (label, sign))
+            logger.error("Found transactions where label %s is not %s" % (label, sign))
             print(df_results)
             print("=============================================")
             exit()
@@ -92,7 +96,7 @@ class CategoryImporter:
     @staticmethod
     def check_all_category_sign(data, sign):
         if not isinstance(data, WalletData):
-            print("check_all_category_sign(): Wrong input type for data")
+            logger.error("check_all_category_sign(): Wrong input type for data")
             raise TypeError("check_all_category_sign(): Wrong input type for data")
 
         if sign == "positive":
@@ -111,7 +115,7 @@ class CategoryImporter:
                             sign)
 
         if not df_results.empty:
-            print("Found transactions where category is not %s" % sign)
+            logger.error("Found transactions where category is not %s" % sign)
             print(df_results)
             print("=============================================")
             exit()

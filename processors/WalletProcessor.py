@@ -3,6 +3,9 @@ from processors.CategoryImporter import CategoryImporter
 from processors.DataImporter import DataImporter
 from processors.ExcelWriter import ExcelWriter
 from processors.GroupCreator import GroupCreator
+import logging
+
+logger = logging.getLogger("Stefano")
 
 
 class WalletProcessor:
@@ -12,7 +15,7 @@ class WalletProcessor:
         if isinstance(time_period, str):
             self.time_period = time_period
         else:
-            print("time_period is not a string")
+            logger.error("time_period is not a string")
             exit()
         if output_filename is None or output_filename == "" or \
                 template_sheet_name is None or template_sheet_name == "":
@@ -32,31 +35,29 @@ class WalletProcessor:
             )
             data = data_import.get_imported_data()
         except Exception as e:
-            print("DataImport(): ", e)
-            exit()
+            logger.error("DataImport(): " + str(e))
+            return
 
         try:
             category_importer = CategoryImporter()
             wallet_category_results = category_importer.process(data)
         except Exception as e:
-            print("CategoryImporter(): ", e)
-            exit()
-
+            logger.error("CategoryImporter(): " + str(e))
+            return
         try:
             category_structurer = CategoryStructurer()
             main_category_results = category_structurer.process(wallet_category_results)
         except Exception as e:
-            print("CategoryStructurer(): ", e)
-            exit()
-
+            logger.error("CategoryStructurer(): " + str(e))
+            return
         try:
             group_creator = GroupCreator()
             group_results = group_creator.process(wallet_category_results)
             group_creator.check_amounts(group_results)
 
         except Exception as e:
-            print("GroupCreator(): ", e)
-            exit()
+            logger.error("GroupCreator(): " + str(e))
+            return
 
         # try:
         excel_writer = ExcelWriter(filename_in="Piano_Spesa_Template_v01.xlsx",
@@ -65,4 +66,4 @@ class WalletProcessor:
 
         excel_writer.write_main_category_results(main_category_results)
         excel_writer.write_group_results(group_results)
-        print("===> Operazione Completata <===")
+        logger.info("===> Operazione Completata <===")
