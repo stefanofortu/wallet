@@ -5,15 +5,22 @@ from openpyxl.styles import Alignment, Font
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
 import logging
+ import os
 
 logger = logging.getLogger("Stefano")
 
 
 class ExcelWriter:
     def __init__(self, filename_in, template_sheetname, output_sheet_name):
+        cwd = os.getcwd()
+        print(cwd)
         self.filename_in = filename_in
         self.sheetname = output_sheet_name
         self.filename_out = self.create_output_name()
+        print(self.filename_in)
+        print(self.filename_out)
+        print("---------")
+        
 
         self.create_output_file()
         self.wb = openpyxl.load_workbook(self.filename_out)
@@ -36,6 +43,8 @@ class ExcelWriter:
         # self.writer = pd.ExcelWriter(self.filename_in, engine='xlsxwriter')
 
     def create_output_name(self):
+        print(self.filename_in)
+        print("---- create output file ----------")
         filename_in_no_extension = self.filename_in.split(".")[0]
         extension = self.filename_in.split(".")[1]
         base_name = filename_in_no_extension.split("_v")[0]
@@ -46,13 +55,14 @@ class ExcelWriter:
 
     def create_output_file(self):
         try:
-            shutil.copy(self.filename_in, self.filename_out)
+            shutil.copy(cwd+"/"+self.filename_in, cwd+"/"+self.filename_out)
         except shutil.SameFileError:
             logger.error("Source and destination represents the same file.")
         except PermissionError:
             logger.error("Permission denied.")
-        except:
-            logger.error("Error occurred while copying file.")
+        #except:
+            #logger.error("Error occurred while copying file.")
+            
 
     def move_sheet_tab_to_end(self):
         sheets = self.wb.sheetnames
