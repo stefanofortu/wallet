@@ -5,22 +5,24 @@ from openpyxl.styles import Alignment, Font
 from data.CategoryResults import CategoryResults
 from data.CategoryStructure import CategoryStructure
 import logging
- import os
+import os
+import platform
 
 logger = logging.getLogger("Stefano")
 
 
 class ExcelWriter:
     def __init__(self, filename_in, template_sheetname, output_sheet_name):
-        cwd = os.getcwd()
-        print(cwd)
-        self.filename_in = filename_in
+        if platform.system() == "Windows":
+            path_separator = "\\"
+        elif platform.system() == "Linux":
+            path_separator = "/"
+        else:
+            path_separator = "\\"
+
+        self.filename_in = os.getcwd() + path_separator + filename_in
         self.sheetname = output_sheet_name
-        self.filename_out = self.create_output_name()
-        print(self.filename_in)
-        print(self.filename_out)
-        print("---------")
-        
+        self.filename_out = os.getcwd() + path_separator + "output_files" + path_separator + self.create_output_name(filename_in)
 
         self.create_output_file()
         self.wb = openpyxl.load_workbook(self.filename_out)
@@ -42,20 +44,19 @@ class ExcelWriter:
 
         # self.writer = pd.ExcelWriter(self.filename_in, engine='xlsxwriter')
 
-    def create_output_name(self):
-        print(self.filename_in)
-        print("---- create output file ----------")
-        filename_in_no_extension = self.filename_in.split(".")[0]
-        extension = self.filename_in.split(".")[1]
+    def create_output_name(self,filename_in):
+        filename_in_no_extension = filename_in.split(".")[0]
+        extension = filename_in.split(".")[1]
         base_name = filename_in_no_extension.split("_v")[0]
         version = int(filename_in_no_extension.split("_v")[1])
         filename = str(datetime.now().strftime("%Y%m%d_%Hh%Mm%Ss"))
-        filename_out = "output_files/" + base_name + "_v" + str(version).zfill(2) + "_" + filename + "." + extension
+        filename_out = base_name + "_v" + str(version).zfill(2) + "_" + filename + "." + extension
         return filename_out
 
     def create_output_file(self):
         try:
-            shutil.copy(cwd+"/"+self.filename_in, cwd+"/"+self.filename_out)
+            os.makedirs(os.path.dirname(self.filename_out), exist_ok=True)
+            shutil.copy(self.filename_in, self.filename_out)
         except shutil.SameFileError:
             logger.error("Source and destination represents the same file.")
         except PermissionError:
