@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QComboBox
 from icons.resources import resource_path
 from processors.WalletProcessor import WalletProcessor
 from utils.LoggingStream import LoggingStream
-import logging
+import logging, os
 
 logger = logging.getLogger("Stefano")
 
@@ -61,24 +61,27 @@ class MainWidget(QWidget):
         widget_main_layout.addLayout(exec_row_layout)
 
         ############### LOGGING  ###############
-        logging_text_browser = QTextBrowser(self)
-        LoggingStream.stdout().messageWritten.connect(logging_text_browser.insertPlainText)
-        LoggingStream.stderr().messageWritten.connect(logging_text_browser.insertPlainText)
-        widget_main_layout.addWidget(logging_text_browser)
+        self.logging_text_browser = QTextBrowser(self)
+        LoggingStream.stdout().messageWritten.connect(self.logging_text_browser.insertPlainText)
+        LoggingStream.stderr().messageWritten.connect(self.logging_text_browser.insertPlainText)
+        widget_main_layout.addWidget(self.logging_text_browser)
         ############### SET MAIN LAYOUT
         self.setLayout(widget_main_layout)
         ############### GUI END
 
     def tc_substitution_exec_conversion(self):
+        self.logging_text_browser.clear()
         wallet_processor = WalletProcessor(input_filename=self.input_file_path_label.text(),
                                            time_period=self.year_selection_combobox.currentText())
         wallet_processor.execute()
 
     def openInputFileDialog(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Select input xlsx file", "",
-                                                  "All Files (*);;Excel Files (*.xlsx);;Excel Files (*.xls) ")
+        last_dir_path = os.path.dirname(self.project_data.input_file_name)
+        fileName, _ = QFileDialog.getOpenFileName(self, caption="Select input xlsx file", dir=last_dir_path,
+                                                  filter="All Files (*);;Excel Files (*.xlsx);;Excel Files (*.xls) ",
+                                                  selectedFilter="Excel Files (*.xls)")
         if fileName:
-            logger.info(fileName)
+            logger.info("file selected: %s", str(fileName))
             self.input_file_path_label.setText(fileName)
             self.project_data.set_input_file_name(input_filename=fileName)
 

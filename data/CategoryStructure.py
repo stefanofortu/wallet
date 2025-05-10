@@ -7,7 +7,7 @@ class CategoryStructure:
                   "Entertainment": ["Eventi", "Fun", "Hobby", "Personal Care",
                                     "Sport & Fitness"],#, "Summer Holidays", "Weekends"],
                   "Travel & Holidays": ["Summer Holidays", "Weekends"],
-                  "Spese finanziarie": ["Beneficienza", "Salute"],
+                  "Spese finanziarie": ["Beneficienza", "Salute", "Prestito"],
                   "Investimenti": ["Education", "Work", "Beni immobili", "Education_New", "Work_New"],
                   "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary", "Regali"],
                   "Altro": ["Prelievo", "Correzioni", "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder", "Adjust balance",
@@ -16,7 +16,7 @@ class CategoryStructure:
 
     expense_groups = {
         "Redditi": {
-            "Income": ["Salary", "Interessi & Dividendi", "Refunds", "Regali"]
+            "Income": ["Salary", "Interessi & Dividendi", "Regali"]
         },
         "Essenziali_Dovute": {
             "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family"],
@@ -36,6 +36,10 @@ class CategoryStructure:
         "Spese_Fisse": {
             "Spese_Immobiliari": ["Affitto/Mutuo", "Beni immobili"],
             "Rate_Auto": []
+        },
+        "Prestiti_Debiti": {
+            "Crediti" : ["Refunds"],
+            "Prestiti": ["Prestito"]
         },
         "Nulle": {
             "Spese_a_zero": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
@@ -78,12 +82,13 @@ class CategoryStructure:
 
     @staticmethod
     def get_income_categories():
-        return CategoryStructure.expense_groups["Redditi"]["Income"]
+        return list(CategoryStructure.expense_groups["Redditi"]["Income"]) + \
+               list(CategoryStructure.expense_groups["Prestiti_Debiti"]["Crediti"])
 
     @staticmethod
     def get_expense_categories():
         return list([x for x in CategoryStructure.get_basic_categories()
-                     if x not in CategoryStructure.expense_groups["Redditi"]["Income"]])
+                     if x not in CategoryStructure.get_income_categories()])
 
     @staticmethod
     def get_expense_to_del():

@@ -64,7 +64,8 @@ class GroupCreator:
             raise TypeError("GroupCreator.check_amounts(): Wrong input type for data")
 
         for group_name in self.expense_groups.keys():
-            if (group_results.df.loc[group_name]["in"] != 0) & (group_results.df.loc[group_name]["out"] != 0):
-                logger.warning(group_name + str("--> in:") + group_results.df.loc[group_name]["in"]
-                               + str("out:") + str(group_results.df.loc[group_name]["out"]))
-                raise TypeError("GroupCreator.process(): in/out/saving distribution not valid")
+            if group_name != "Prestiti_Debiti":
+                if (group_results.df.loc[group_name]["in"] != 0) & (group_results.df.loc[group_name]["out"] != 0):
+                    logger.warning(group_name + str("--> in:") + str(group_results.df.loc[group_name]["in"])
+                                   + str(" out:") + str(group_results.df.loc[group_name]["out"]))
+                    raise TypeError("GroupCreator.process(): in/out/saving distribution not valid")

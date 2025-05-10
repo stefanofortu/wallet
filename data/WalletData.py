@@ -12,30 +12,43 @@ class WalletData:
             logger.error("WalletData - init(): Wrong input type for data")
             raise TypeError
 
-        self.df = data
-        self.df_transfers = None
+        self.data = data
         self.verify_currency()
         self.filter_out_columns()
+        self.select_personal_accounts()
+
+        self.df_main = self.data[self.data['category'] != "TRANSFER"]
+        self.df_transfers = self.data[self.data['category'] == 'TRANSFER']
 
     def verify_currency(self):
-        currency_list = self.df['currency'].unique()
+        currency_list = self.data['currency'].unique()
         if currency_list.size != 1 or currency_list[0] != 'EUR':
             raise ValueError('All currency in dataframe are not EURO (€)')
 
     def filter_out_columns(self):
-        self.df.drop(columns=['ref_currency_amount', 'payment_type', 'payment_type_local',
+        self.data.drop(columns=['ref_currency_amount', 'payment_type', 'payment_type_local',
                               'gps_latitude', 'gps_longitude', 'gps_accuracy_in_meters',
                               'warranty_in_month', 'transfer', 'payee', "currency",
                               'envelope_id', 'custom_category'], inplace=True)
-        self.df.reset_index(inplace=True, drop=True)
+        self.data.reset_index(inplace=True, drop=True)
 
-        column_list = list(self.df.columns)
+        column_list = list(self.data.columns)
         difference_column_list = list(set(self.data_columns) ^ set(column_list))
 
         if len(difference_column_list) > 0:
             logger.error("more column than allowed in import file")
             raise ImportError
 
-    def fill_dataframe_transfers(self):
-        self.df_transfers = self.df[self.df['category'] == 'TRANSFER']
-        self.df = self.df[self.df['category'] != "TRANSFER"]
+    def select_personal_accounts(self):
+        all_accounts = self.data['account'].unique()
+        accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays", "BPM"])
+        account_to_be_removed = list(set(all_accounts) - set(accounts_to_keep))
+        for account in account_to_be_removed:
+            self.data = self.data.drop(
+                self.data[self.data["account"] == account].index)
+        self.data.reset_index(inplace=True, drop=True)
+
+        accounts = list(self.data['account'].unique())
+        account_remained = list(set(accounts) ^ set(accounts_to_keep))
+        if len(account_remained) > 0:
+            logger.info("The following accounts are not present" + str(account_remained))

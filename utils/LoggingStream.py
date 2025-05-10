@@ -26,7 +26,7 @@ def setup_logger():
     console_logging_handler.setLevel(logging.DEBUG)
     # create PyQt handler which logs INFO message
     qt_logging_handler = LoggingStreamHandler()
-    qt_logging_handler.setLevel(logging.WARNING)
+    qt_logging_handler.setLevel(logging.DEBUG)
     # formatter = logging.Formatter(fmt=("[%(asctime)s %(levelname)8s]: %(message)s"), datefmt="%H:%M:%S")
     # logger.addHandler(qt_logging_handler)
 

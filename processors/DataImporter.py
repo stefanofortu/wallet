@@ -23,10 +23,12 @@ class DataImporter:
             raise TypeError
 
         self.import_file()
-        self.select_personal_accounts()
+        # only on df_main
         self.filter_data_by_time()
-        self.wallet_data.fill_dataframe_transfers()
         self.verify_single_label()
+        # only on df_transfers
+        ## questo va spostato
+        #self.wallet_data.fill_dataframe_transfers()
         self.verify_single_label_for_transfers()
 
     def get_imported_data(self) -> WalletData:
@@ -35,23 +37,10 @@ class DataImporter:
     def import_file(self):
         all_data = pd.read_excel(self.input_filename)
         self.wallet_data = WalletData(all_data)
-
-    def select_personal_accounts(self):
-        all_accounts = self.wallet_data.df['account'].unique()
-        accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays", "BPM"])
-        account_to_be_removed = list(set(all_accounts) - set(accounts_to_keep))
-        for account in account_to_be_removed:
-            self.wallet_data.df = self.wallet_data.df.drop(
-                self.wallet_data.df[self.wallet_data.df["account"] == account].index)
-        self.wallet_data.df.reset_index(inplace=True, drop=True)
-
-        accounts = list(self.wallet_data.df['account'].unique())
-        account_remained = list(set(accounts) ^ set(accounts_to_keep))
-        if len(account_remained) > 0:
-            logger.info("The following accounts are not present" + str(account_remained))
+        del all_data
 
     def verify_single_label(self):
-        labels_imported = self.wallet_data.df['labels'].unique()
+        labels_imported = self.wallet_data.df_main['labels'].unique()
         wrong_label = False
         empty_label = False
         for label in labels_imported:
@@ -64,9 +53,9 @@ class DataImporter:
 
         if empty_label or wrong_label:
             logger.info("all labels imported:" + str(labels_imported))
-            filtered_data = self.wallet_data.df[(self.wallet_data.df["labels"] != "in") &
-                                                (self.wallet_data.df["labels"] != "out") &
-                                                (self.wallet_data.df["labels"] != "risparmi")]
+            filtered_data = self.wallet_data.df_main[(self.wallet_data.df_main["labels"] != "in") &
+                                                    (self.wallet_data.df_main["labels"] != "out") &
+                                                    (self.wallet_data.df_main["labels"] != "risparmi")]
             logger.info(filtered_data[['date', 'account', 'category', 'labels']])
             if wrong_label:
                 raise ValueError('verify_single_label(). Label not in/out/savings')
@@ -75,18 +64,35 @@ class DataImporter:
 
     def verify_single_label_for_transfers(self):
         labels_imported = self.wallet_data.df_transfers['labels'].unique()
+        # logger.info("all labels imported:" + str(labels_imported))
+        df_noNan = self.wallet_data.df_transfers.dropna(subset=['labels'])
+        labels_imported_noNan = df_noNan['labels'].unique()
+        # logger.info("labels_imported_noNan:" + str(labels_imported_noNan))
+
         wrong_label = False
-        for label in labels_imported:
+        empty_label = False
+        for label in labels_imported_noNan:
             if isinstance(label, str):
-                if label != "contabile":
+                if label != "In_Casa_Stefano" and label != "In_Casa_Severo" and label != "contabile":
                     wrong_label = True
 
         if wrong_label:
-            print("all labels found in TRANSFERS:" + str(labels_imported))
-            df_no_nan = self.wallet_data.df_transfers.dropna(subset=['labels'])
-            filtered_data = df_no_nan[(df_no_nan["labels"] != "contabile")]
-            logger.info(filtered_data[['date', 'account', 'category', 'labels']])
-            raise ValueError('verify_single_label_for_transfers(). Label not \'contabile\'')
+            #logger.info("all labels imported:" + str(labels_imported_noNan))
+            filtered_data = df_noNan[(df_noNan["labels"] != "In_Casa_Stefano") &
+                                     (df_noNan["labels"] != "In_Casa_Severo") &
+                                     (df_noNan["labels"] != "contabile")]
+            #logger.info(filtered_data[['date', 'account', 'category', 'labels']])
+            if wrong_label:
+                raise ValueError('verify_single_label(). Label not In_Casa_Stefano/In_Casa_Severo/contabile')
+            if empty_label:
+                raise ValueError('verify_single_label(). Label empty')
+
+        #if wrong_label:
+        #    print("all labels found in TRANSFERS:" + str(labels_imported))
+        #    df_no_nan = self.wallet_data.df_transfers.dropna(subset=['labels'])
+        #    filtered_data = df_no_nan[(df_no_nan["labels"] != "contabile")]
+        #    logger.info(filtered_data[['date', 'account', 'category', 'labels']])
+        #    raise ValueError('verify_single_label_for_transfers(). Label not \'contabile\'')
 
     def filter_data_by_time(self):
         if not isinstance(self.wallet_data, WalletData):
@@ -105,7 +111,7 @@ class DataImporter:
             logger.error("Error in timestamp_end_date()", e)
             raise TypeError
 
-        filtered_data = self.wallet_data.df[(self.wallet_data.df["date"] >= timestamp_start_date) &
-                                            (self.wallet_data.df["date"] <= timestamp_end_date)]
+        filtered_data = self.wallet_data.df_main[(self.wallet_data.df_main["date"] >= timestamp_start_date) &
+                                            (self.wallet_data.df_main["date"] <= timestamp_end_date)]
         filtered_data.reset_index(inplace=True)
-        self.wallet_data.df = filtered_data
+        self.wallet_data.df_main = filtered_data
