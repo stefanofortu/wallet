@@ -13,6 +13,8 @@ class Project_Data:
         self.project_file_name = "ProjectData.json"
         self.input_file_name = ""
         self.year_selected = ""
+        self.start_date_selected = ""
+        self.end_date_selected = ""
         self.read_project_file()
 
     def set_input_file_name(self, input_filename):
@@ -23,6 +25,14 @@ class Project_Data:
         self.year_selected = year_selected
         self.write_project_file()
 
+    def set_start_date_selected(self, start_date):
+        self.start_date = start_date
+        self.write_project_file()
+
+    def set_end_date_selected(self, end_date):
+        self.end_date = end_date
+        self.write_project_file()
+
     def read_project_file(self):
         try:
             with open(self.project_file_name, 'r') as in_file:
@@ -30,6 +40,8 @@ class Project_Data:
                 json_dict = json.load(in_file)
                 self.input_file_name = json_dict["input_file_name"]
                 self.year_selected = json_dict["year_selected"]
+                self.start_date_selected = json_dict["start_date_selected"]
+                self.end_date_selected = json_dict["end_date_selected"]
         except OSError:
             logger.error("project file not found")
             self.input_file_name = ""
@@ -41,7 +53,9 @@ class Project_Data:
     def write_project_file(self):
         output_dict = {
             "input_file_name": self.input_file_name,
-            "year_selected": self.year_selected
+            "year_selected": self.year_selected,
+            "start_date_selected": self.start_date_selected,
+            "end_date_selected": self.end_date_selected
         }
 
         with open(self.project_file_name, "w") as out_file:

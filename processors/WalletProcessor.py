@@ -10,13 +10,23 @@ logger = logging.getLogger("Stefano")
 
 class WalletProcessor:
 
-    def __init__(self, input_filename, time_period, output_filename=None, template_sheet_name=None):
+    def __init__(self, input_filename, time_period, start_date=None , end_date=None, output_filename=None, template_sheet_name=None):
         self.input_filename = input_filename
-        if isinstance(time_period, str):
-            self.time_period = time_period
+        if time_period is not None:
+            if not isinstance(time_period, str):
+                logger.error("time_period is not a string %s", time_period)
+                exit()
+            else:
+                self.time_period = time_period
         else:
-            logger.error("time_period is not a string")
-            exit()
+            if time_period is None:
+                logger.error("end_date is not a string %s", end_date)
+                exit()
+            else:
+                if isinstance(end_date, str):
+                    self.start_date = start_date
+                if isinstance(end_date, str):
+                        self.end_date = end_date
         if output_filename is None or output_filename == "" or \
                 template_sheet_name is None or template_sheet_name == "":
             self.output_filename = "Piano_Spesa_Template_v01.xlsx"
@@ -30,8 +40,8 @@ class WalletProcessor:
             data_import = DataImporter(
                 filename=self.input_filename,
                 year=self.time_period,
-                # start_date="2023-12-25",
-                # end_date="2023-12-31"
+                start_date=self.star_date,
+                end_date=self.end_date
             )
             data = data_import.get_imported_data()
         except Exception as e:

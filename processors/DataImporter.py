@@ -23,13 +23,11 @@ class DataImporter:
             raise TypeError
 
         self.import_file()
-        # only on df_main
+        # only on df_main and not in df_transfers
         self.filter_data_by_time()
         self.verify_single_label()
-        # only on df_transfers
-        ## questo va spostato
-        #self.wallet_data.fill_dataframe_transfers()
         self.verify_single_label_for_transfers()
+        self.find_transfers_inside_outside_wallet()
 
     def get_imported_data(self) -> WalletData:
         return self.wallet_data
@@ -54,8 +52,8 @@ class DataImporter:
         if empty_label or wrong_label:
             logger.info("all labels imported:" + str(labels_imported))
             filtered_data = self.wallet_data.df_main[(self.wallet_data.df_main["labels"] != "in") &
-                                                    (self.wallet_data.df_main["labels"] != "out") &
-                                                    (self.wallet_data.df_main["labels"] != "risparmi")]
+                                                     (self.wallet_data.df_main["labels"] != "out") &
+                                                     (self.wallet_data.df_main["labels"] != "risparmi")]
             logger.info(filtered_data[['date', 'account', 'category', 'labels']])
             if wrong_label:
                 raise ValueError('verify_single_label(). Label not in/out/savings')
@@ -77,17 +75,17 @@ class DataImporter:
                     wrong_label = True
 
         if wrong_label:
-            #logger.info("all labels imported:" + str(labels_imported_noNan))
+            # logger.info("all labels imported:" + str(labels_imported_noNan))
             filtered_data = df_noNan[(df_noNan["labels"] != "In_Casa_Stefano") &
                                      (df_noNan["labels"] != "In_Casa_Severo") &
                                      (df_noNan["labels"] != "contabile")]
-            #logger.info(filtered_data[['date', 'account', 'category', 'labels']])
+            # logger.info(filtered_data[['date', 'account', 'category', 'labels']])
             if wrong_label:
                 raise ValueError('verify_single_label(). Label not In_Casa_Stefano/In_Casa_Severo/contabile')
             if empty_label:
                 raise ValueError('verify_single_label(). Label empty')
 
-        #if wrong_label:
+        # if wrong_label:
         #    print("all labels found in TRANSFERS:" + str(labels_imported))
         #    df_no_nan = self.wallet_data.df_transfers.dropna(subset=['labels'])
         #    filtered_data = df_no_nan[(df_no_nan["labels"] != "contabile")]
@@ -112,6 +110,34 @@ class DataImporter:
             raise TypeError
 
         filtered_data = self.wallet_data.df_main[(self.wallet_data.df_main["date"] >= timestamp_start_date) &
-                                            (self.wallet_data.df_main["date"] <= timestamp_end_date)]
+                                                 (self.wallet_data.df_main["date"] <= timestamp_end_date)]
         filtered_data.reset_index(inplace=True)
         self.wallet_data.df_main = filtered_data
+
+    def find_transfers_inside_outside_wallet(self):
+
+        # Conta quante volte ciascun trasferimento ha uan specifica data
+        conteggio = self.wallet_data.df_transfers['date'].value_counts()
+        #print(self.wallet_data.df_transfers[["account", "category", "amount", "type", "date", "labels"]].to_string(
+        #    index=False))
+        # Seleziona i valori che compaiono esattamente due volte
+        valori_con_due_occorrenze = conteggio[conteggio == 2].index
+
+        # Filtra il DataFrame escludendo le righe che hanno doppia quei valori in 'A'
+        df_transfers_doppi = self.wallet_data.df_transfers[
+            self.wallet_data.df_transfers['date'].isin(valori_con_due_occorrenze)]
+        df_senza_transfers_doppi = self.wallet_data.df_transfers[
+            ~self.wallet_data.df_transfers['date'].isin(valori_con_due_occorrenze)]
+
+        df_transfers_doppi_per_anno = df_transfers_doppi[df_transfers_doppi['date'].dt.year == 2024]
+        # print(df_transfers_doppi_per_anno)
+        # Somma della colonna 'B'
+        somma_df_transfers_doppi = df_transfers_doppi_per_anno['amount'].sum()
+        print("Somma colonna importi df_transfers_doppi:", somma_df_transfers_doppi)
+
+        df_transfers_non_doppi_per_anno = df_senza_transfers_doppi[df_senza_transfers_doppi['date'].dt.year == 2023]
+
+        print(df_transfers_non_doppi_per_anno[["account", "category", "amount", "type", "date", "labels"]].to_string(
+            index=False))
+        somma_df_senza_transfers_doppi = df_senza_transfers_doppi['amount'].sum()
+        print("Somma colonna importi df_transfers non doppi:", somma_df_senza_transfers_doppi)
