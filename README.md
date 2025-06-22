@@ -6,10 +6,17 @@
 3. Tutte le spese che vanno in risparmi, devono avere etichetta risparmi.
 	- Risulteranno in una colonna
 4. Spese Contabili.
+   OPZIONE 1
    - Quando c'è la necessità di spostare una spesa/ingresso in un altro anno contabile, bisogna fare come in questo esempio. 
 	 - Stipendio di Dicembre 2024 ricevuto a Gennaio 2025
 	 - Lo stipendio effettivo [Gennaio 2025] deve diventare un trasferimento in ingresso (dal di-fuori del wallet, con etichetta #contabile
 	 - Lo stipendio contabile [Dicembre 2024] deve avere una voce in ingresso (#in) e un trasferimento in uscita (al difuori del wallet, con etichetta #contabile)
+   OPZIONE 2
+   - Usare categoria "Contabile" senza tag! (obbiettivo: diminuire il num di trasferimenti) 
+
+5. Prestiti e Crediti.
+   - Non devono avere l'etichetta #in e #out
+
 
 # DataTypes:
 ## walletData

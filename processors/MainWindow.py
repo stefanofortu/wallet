@@ -26,11 +26,11 @@ class Project_Data:
         self.write_project_file()
 
     def set_start_date_selected(self, start_date):
-        self.start_date = start_date
+        self.start_date_selected = start_date
         self.write_project_file()
 
     def set_end_date_selected(self, end_date):
-        self.end_date = end_date
+        self.end_date_selected = end_date
         self.write_project_file()
 
     def read_project_file(self):

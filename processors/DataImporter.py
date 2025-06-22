@@ -8,26 +8,20 @@ logger = logging.getLogger("Stefano")
 
 class DataImporter:
 
-    def __init__(self, filename, year=None, start_date=None, end_date=None, ):
+    def __init__(self, filename, start_date=None, end_date=None, ):
         self.input_filename = filename
         self.wallet_data = None
-
-        if year is not None:
-            self.start_date = year + "-01-01"
-            self.end_date = year + "-12-31"
-        elif start_date is not None and end_date is not None:
-            self.start_date = start_date
-            self.end_date = end_date
-        else:
-            logger.error("Error in year | start_data | end_date input")
-            raise TypeError
+        self.start_date = start_date
+        self.end_date = end_date
 
         self.import_file()
         # only on df_main and not in df_transfers
         self.filter_data_by_time()
         self.verify_single_label()
         self.verify_single_label_for_transfers()
-        self.find_transfers_inside_outside_wallet()
+        # self.find_transfers_inside_outside_wallet()
+        self.verify_single_label_loan_debts()
+        self.verify_single_label_contabile()
 
     def get_imported_data(self) -> WalletData:
         return self.wallet_data
@@ -39,6 +33,7 @@ class DataImporter:
 
     def verify_single_label(self):
         labels_imported = self.wallet_data.df_main['labels'].unique()
+        self.wallet_data.df_main.to_csv('debug.csv')
         wrong_label = False
         empty_label = False
         for label in labels_imported:
@@ -92,6 +87,28 @@ class DataImporter:
         #    logger.info(filtered_data[['date', 'account', 'category', 'labels']])
         #    raise ValueError('verify_single_label_for_transfers(). Label not \'contabile\'')
 
+    def verify_single_label_loan_debts(self):
+        # labels_imported = self.wallet_data.df_loan_debts['labels'].unique()
+        # logger.info("all labels imported:" + str(labels_imported))
+        df_no_nan = self.wallet_data.df_loan_debts.dropna(subset=['labels'])
+        labels_imported_no_nan = df_no_nan['labels'].unique()
+
+        if len(labels_imported_no_nan) > 0:
+            logger.info("verify_single_label_loan_debts(): labels_imported_noNan:" + str(labels_imported_no_nan))
+            print(df_no_nan)
+            raise ValueError('verify_single_label_loan_debts(). Tag not empty')
+
+    def verify_single_label_contabile(self):
+        # labels_imported = self.wallet_data.df_loan_debts['labels'].unique()
+        # logger.info("all labels imported:" + str(labels_imported))
+        df_no_nan = self.wallet_data.df_contabile.dropna(subset=['labels'])
+        labels_imported_no_nan = df_no_nan['labels'].unique()
+
+        if len(labels_imported_no_nan) > 0:
+            logger.info("verify_single_label_contabile(): labels_imported_noNan:" + str(labels_imported_no_nan))
+            print(df_no_nan)
+            raise ValueError('verify_single_label_contabile(). Tag not empty')
+
     def filter_data_by_time(self):
         if not isinstance(self.wallet_data, WalletData):
             logger.error("get_time_filtered_data(): Wrong input type for data")
@@ -118,7 +135,7 @@ class DataImporter:
 
         # Conta quante volte ciascun trasferimento ha uan specifica data
         conteggio = self.wallet_data.df_transfers['date'].value_counts()
-        #print(self.wallet_data.df_transfers[["account", "category", "amount", "type", "date", "labels"]].to_string(
+        # print(self.wallet_data.df_transfers[["account", "category", "amount", "type", "date", "labels"]].to_string(
         #    index=False))
         # Seleziona i valori che compaiono esattamente due volte
         valori_con_due_occorrenze = conteggio[conteggio == 2].index

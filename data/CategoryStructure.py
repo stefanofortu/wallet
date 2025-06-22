@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger("Stefano")
+
+
 class CategoryStructure:
     categories = {"Cibo & Bevande": ["Bar & Locali", "Lunch", "Spesa"],
                   "Shopping": ["Abbigliamento & Scarpe", "Electronics", "Gifts"],
@@ -5,13 +10,13 @@ class CategoryStructure:
                   "Trasporti": ["Trasporto pubblico"],
                   "Veicoli": ["Assicurazione veicoli", "Carburante", "Manutenzione veicoli", "Parking and Tolls"],
                   "Entertainment": ["Eventi", "Fun", "Hobby", "Personal Care",
-                                    "Sport & Fitness"],#, "Summer Holidays", "Weekends"],
+                                    "Sport & Fitness"],  # , "Summer Holidays", "Weekends"],
                   "Travel & Holidays": ["Summer Holidays", "Weekends"],
                   "Spese finanziarie": ["Beneficienza", "Salute", "Prestito"],
                   "Investimenti": ["Education", "Work", "Beni immobili", "Education_New", "Work_New"],
                   "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary", "Regali"],
-                  "Altro": ["Prelievo", "Correzioni", "Trasferimento", "Salary IN", "Salary OUT", "Unexpected", "Placeholder", "Adjust balance",
-                            "Check Balance"]
+                  "Altro": ["Prelievo", "Correzioni", "Trasferimento", "Salary IN", "Salary OUT", "Unexpected",
+                            "Placeholder", "Adjust balance", "Check Balance", "Contabile"]
                   }
 
     expense_groups = {
@@ -37,13 +42,12 @@ class CategoryStructure:
             "Spese_Immobiliari": ["Affitto/Mutuo", "Beni immobili"],
             "Rate_Auto": []
         },
-        "Prestiti_Debiti": {
-            "Crediti" : ["Refunds"],
-            "Prestiti": ["Prestito"]
-        },
         "Nulle": {
             "Spese_a_zero": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
-                             "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"]
+                             "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"],
+            "Crediti": ["Refunds"],
+            "Prestiti": ["Prestito"],
+            "Contabile": ["Contabile"]
         }
         # "Income_risparmi": {
         #     "Income": ["Salary", "Interessi & Dividendi", "Refunds", "Regali"]
@@ -82,8 +86,9 @@ class CategoryStructure:
 
     @staticmethod
     def get_income_categories():
-        return list(CategoryStructure.expense_groups["Redditi"]["Income"]) + \
-               list(CategoryStructure.expense_groups["Prestiti_Debiti"]["Crediti"])
+        return list(CategoryStructure.expense_groups["Redditi"]["Income"])  # \
+        # + \
+        # list(CategoryStructure.expense_groups["Prestiti_Debiti"]["Crediti"])
 
     @staticmethod
     def get_expense_categories():
@@ -132,5 +137,6 @@ class CategoryStructure:
 
         category_difference = list(set(all_basic_categories) ^ set(all_categories_of_expense_groups))
         if len(category_difference) > 0:
-            logger.error("CategoryStructure.check_expense_group(): error", category_difference)
+            logger.error("CategoryStructure.check_expense_group(): len(category_difference) > 0")
+            print(category_difference)
             raise TypeError

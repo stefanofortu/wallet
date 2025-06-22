@@ -17,8 +17,17 @@ class WalletData:
         self.filter_out_columns()
         self.select_personal_accounts()
 
-        self.df_main = self.data[self.data['category'] != "TRANSFER"]
-        self.df_transfers = self.data[self.data['category'] == 'TRANSFER']
+        mask_loan_debts = self.data['category'].isin(['Credito', 'Prestito', "Refunds"])
+        self.df_loan_debts = self.data[mask_loan_debts]
+
+        mask_transfer = (self.data['category'] == 'TRANSFER')
+        self.df_transfers = self.data[mask_transfer]
+
+        mask_contabile = (self.data['category'] == 'Contabile')
+        self.df_contabile = self.data[mask_contabile]
+
+        self.not_main = self.data[(mask_loan_debts | mask_transfer | mask_contabile)]
+        self.df_main = self.data[~(mask_loan_debts | mask_transfer | mask_contabile)]
 
     def verify_currency(self):
         currency_list = self.data['currency'].unique()
