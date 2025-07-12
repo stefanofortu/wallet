@@ -8,13 +8,13 @@ logger = logging.getLogger("Stefano")
 
 class DataImporter:
 
-    def __init__(self, filename, start_date=None, end_date=None, ):
+    def __init__(self, filename, main_wallet_selection=True, start_date=None, end_date=None, ):
         self.input_filename = filename
         self.wallet_data = None
         self.start_date = start_date
         self.end_date = end_date
 
-        self.import_file()
+        self.import_file(main_wallet_selection=main_wallet_selection)
         # only on df_main and not in df_transfers
         self.filter_data_by_time()
         self.verify_single_label()
@@ -26,10 +26,12 @@ class DataImporter:
     def get_imported_data(self) -> WalletData:
         return self.wallet_data
 
-    def import_file(self):
+    def import_file(self, main_wallet_selection):
         all_data = pd.read_excel(self.input_filename)
-        self.wallet_data = WalletData(all_data)
+        self.wallet_data = WalletData(all_data, main_wallet_selection)
         del all_data
+
+
 
     def verify_single_label(self):
         labels_imported = self.wallet_data.df_main['labels'].unique()

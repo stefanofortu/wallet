@@ -37,37 +37,49 @@ class MainWidget(QWidget):
         ##
         widget_main_layout.addLayout(input_file_layout)
 
-        year_selection_combobox_layout = QHBoxLayout()
-        self.year_selection_checkbox = QCheckBox("Select year")
-        self.year_selection_checkbox.setChecked(True)
-        self.year_selection_checkbox.stateChanged.connect(self.year_selection_checkbox_toggled)
-        self.year_selection_combobox = QComboBox()
-        self.year_selection_combobox.addItems([str(x) for x in range(2018, 2026)])
-        self.year_selection_combobox.setCurrentText(self.project_data.year_selected)
-        self.year_selection_combobox.currentTextChanged.connect(self.save_year_selected)
-        self.year_selection_combobox.setEnabled(True)
+        wallets_selection_layout = QVBoxLayout()
+        self.main_wallet_checkbox = QCheckBox("Main wallet")
+        self.main_wallet_checkbox.setChecked(True)
+        self.main_wallet_checkbox.stateChanged.connect(self.main_wallet_checkbox_toggled)
+        self.home_wallet_checkbox = QCheckBox("Home wallets")
+        self.home_wallet_checkbox.setChecked(False)
+        self.home_wallet_checkbox.stateChanged.connect(self.home_wallet_checkbox_toggled)
 
-        self.start_end_date_checkbox = QCheckBox("Select time period")
-        self.start_end_date_checkbox.setChecked(False)
-        self.start_end_date_checkbox.stateChanged.connect(self.start_end_date_checkbox_toggled)
+        wallets_selection_layout.addWidget(self.main_wallet_checkbox)
+        wallets_selection_layout.addWidget(self.home_wallet_checkbox)
+
+        start_date_layout = QVBoxLayout()
+        self.start_date_label = QLabel(self)
+        self.start_date_label.setText("Start date")
+        self.start_date_label.setAlignment(Qt.AlignLeft)
         self.start_date_edit = QDateEdit()
         self.start_date_edit.setCalendarPopup(True)
         self.start_date_edit.setDate(QDate.fromString(self.project_data.start_date_selected, "yyyy-MM-dd"))
         self.start_date_edit.dateChanged.connect(self.save_start_date_selected)
-        self.start_date_edit.setEnabled(False)
+        self.start_date_edit.setEnabled(True)
+        start_date_layout.addWidget(self.start_date_label)
+        start_date_layout.addWidget(self.start_date_edit)
+
+        end_date_layout = QVBoxLayout()
+        self.end_date_label = QLabel(self)
+        self.end_date_label.setText("End date: ")
+        self.end_date_label.setAlignment(Qt.AlignLeft)
         self.end_date_edit = QDateEdit()
         self.end_date_edit.setCalendarPopup(True)
         self.end_date_edit.setDate(QDate.fromString(self.project_data.end_date_selected, "yyyy-MM-dd"))
         self.end_date_edit.dateChanged.connect(self.save_end_date_selected)
-        self.end_date_edit.setEnabled(False)
+        self.end_date_edit.setEnabled(True)
+        end_date_layout.addWidget(self.end_date_label)
+        end_date_layout.addWidget(self.end_date_edit)
 
-        year_selection_combobox_layout.addWidget(self.year_selection_checkbox)
-        year_selection_combobox_layout.addWidget(self.year_selection_combobox)
-        year_selection_combobox_layout.addStretch()
-        year_selection_combobox_layout.addWidget(self.start_end_date_checkbox)
-        year_selection_combobox_layout.addWidget(self.start_date_edit)
-        year_selection_combobox_layout.addWidget(self.end_date_edit)
-        widget_main_layout.addLayout(year_selection_combobox_layout)
+        wallet_time_selection_layout = QHBoxLayout()
+        wallet_time_selection_layout.addLayout(wallets_selection_layout)
+        wallet_time_selection_layout.addStretch()
+        wallet_time_selection_layout.addLayout(start_date_layout)
+        wallet_time_selection_layout.addStretch()
+        wallet_time_selection_layout.addLayout(end_date_layout)
+
+        widget_main_layout.addLayout(wallet_time_selection_layout)
 
         ############### ELABORATION  ###############
         exec_row_layout = QHBoxLayout()
@@ -92,18 +104,11 @@ class MainWidget(QWidget):
 
     def tc_substitution_exec_conversion(self):
         self.logging_text_browser.clear()
-        if self.year_selection_checkbox.isChecked():
-            wallet_processor = WalletProcessor(input_filename=self.input_file_path_label.text(),
-                                               time_period=self.year_selection_combobox.currentText(),
-                                               start_date=None,
-                                               end_date=None
-                                               )
-        if self.start_end_date_checkbox.isChecked():
-            wallet_processor = WalletProcessor(input_filename=self.input_file_path_label.text(),
-                                               time_period=None,
-                                               start_date=self.start_date_edit.date().toString("yyyy-MM-dd"),
-                                               end_date=self.end_date_edit.date().toString("yyyy-MM-dd")
-                                               )
+        wallet_processor = WalletProcessor(input_filename=self.input_file_path_label.text(),
+                                           main_wallet_selection = self.main_wallet_checkbox.isChecked(),
+                                           start_date=self.start_date_edit.date().toString("yyyy-MM-dd"),
+                                           end_date=self.end_date_edit.date().toString("yyyy-MM-dd")
+                                           )
         wallet_processor.execute()
 
     def openInputFileDialog(self):
@@ -125,20 +130,14 @@ class MainWidget(QWidget):
     def save_end_date_selected(self, qdate):
         self.project_data.set_end_date_selected(qdate.toString("yyyy-MM-dd"))
 
-    def year_selection_checkbox_toggled(self):
-        if self.year_selection_checkbox.isChecked():
-            self.start_end_date_checkbox.setChecked(False)
-            self.start_date_edit.setEnabled(False)
-            self.end_date_edit.setEnabled(False)
+    def main_wallet_checkbox_toggled(self):
+        if self.main_wallet_checkbox.isChecked():
+            self.home_wallet_checkbox.setChecked(False)
         else:
-            self.start_end_date_checkbox.setChecked(True)
-            self.start_date_edit.setEnabled(True)
-            self.end_date_edit.setEnabled(True)
+            self.home_wallet_checkbox.setChecked(True)
 
-    def start_end_date_checkbox_toggled(self):
-        if self.start_end_date_checkbox.isChecked():
-            self.year_selection_checkbox.setChecked(False)
-            self.year_selection_combobox.setEnabled(False)
+    def home_wallet_checkbox_toggled(self):
+        if self.home_wallet_checkbox.isChecked():
+            self.main_wallet_checkbox.setChecked(False)
         else:
-            self.year_selection_checkbox.setChecked(True)
-            self.year_selection_combobox.setEnabled(True)
+            self.main_wallet_checkbox.setChecked(True)

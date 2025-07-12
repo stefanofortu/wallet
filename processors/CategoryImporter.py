@@ -17,7 +17,6 @@ class CategoryImporter:
             logger.error("get_data_by_category(): Wrong input type for data")
             raise TypeError("get_data_by_category(): Wrong input type for data")
 
-        self.check_categories_name(data)
         self.verify_to_del_categories(data)
         self.check_all_labels_sign(data=data, label="in", sign="positive")
         self.check_all_labels_sign(data=data, label="out", sign="negative")
@@ -54,13 +53,6 @@ class CategoryImporter:
     """ check_categories_name
         Funzione che controlla che le categorie in ingresso non abbiano nomi diversi da quelli previsti nella lista
     """
-
-    def check_categories_name(self, data):
-        categories_in_df = (list(data.df_main["category"].unique()))
-        categories_excess = list(set(categories_in_df) - set(self.all_category))
-        if len(categories_excess) > 0:
-            raise TypeError("CategoryImporter.check_categories_name() - more categories in import file, ",
-                            categories_excess)
 
     def verify_to_del_categories(self, data):
         category_to_del = CategoryStructure.get_expense_to_del()

@@ -12,10 +12,11 @@ class CategoryStructure:
                   "Entertainment": ["Eventi", "Fun", "Hobby", "Personal Care",
                                     "Sport & Fitness"],  # , "Summer Holidays", "Weekends"],
                   "Travel & Holidays": ["Summer Holidays", "Weekends"],
-                  "Spese finanziarie": ["Beneficienza", "Salute", "Prestito"],
+                  "Spese finanziarie": ["Beneficienza", "Salute", "Prestito", "Restituzione credito"],
                   "Investimenti": ["Education", "Work", "Beni immobili", "Education_New", "Work_New"],
-                  "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary", "Regali"],
-                  "Altro": ["Prelievo", "Correzioni", "Trasferimento", "Salary IN", "Salary OUT", "Unexpected",
+                  "Introiti": ["Entrate da affitto", "Interessi & Dividendi", "Refunds", "Salary", "Regali", "Credito",
+                               "Quote"],
+                  "Altro": ["Prelievo", "Correzioni", "TRANSFER", "Salary IN", "Salary OUT", "Unexpected",
                             "Placeholder", "Adjust balance", "Check Balance", "Contabile"]
                   }
 
@@ -42,11 +43,14 @@ class CategoryStructure:
             "Spese_Immobiliari": ["Affitto/Mutuo", "Beni immobili"],
             "Rate_Auto": []
         },
+        "Entrate_Casa": {
+            "Entrate_Immobiliari": ["Quote"]
+        },
         "Nulle": {
-            "Spese_a_zero": ["Education", "Correzioni", "Salary OUT", "Salary IN", "Trasferimento",
+            "Spese_a_zero": ["Education", "Correzioni", "Salary OUT", "Salary IN", "TRANSFER",
                              "Entrate da affitto", "Prelievo", "Work", "Placeholder", "Check Balance"],
-            "Crediti": ["Refunds"],
-            "Prestiti": ["Prestito"],
+            "Crediti": ["Credito", "Restituzione credito"],
+            "Prestiti": ["Prestito", "Refunds"],
             "Contabile": ["Contabile"]
         }
         # "Income_risparmi": {

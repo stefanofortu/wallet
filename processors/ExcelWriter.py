@@ -12,7 +12,7 @@ logger = logging.getLogger("Stefano")
 
 
 class ExcelWriter:
-    def __init__(self, filename_in, template_sheetname, output_sheet_name):
+    def __init__(self, filename_in, template_sheetname, sheetname_title):
         if platform.system() == "Windows":
             path_separator = "\\"
         elif platform.system() == "Linux":
@@ -21,7 +21,6 @@ class ExcelWriter:
             path_separator = "\\"
 
         self.filename_in = os.getcwd() + path_separator + filename_in
-        self.sheetname = output_sheet_name
         self.filename_out = os.getcwd() + path_separator + "output_files" + path_separator + self.create_output_name(filename_in)
 
         self.create_output_file()
@@ -34,7 +33,7 @@ class ExcelWriter:
 
         # OPTION 2 to modify an existing wb
         self.ws = self.wb.get_sheet_by_name(template_sheetname)
-        self.ws.title = self.sheetname
+        self.ws.title = sheetname_title
         self.ws.sheet_properties.tabColor = "FFFF00"
 
         self.move_sheet_tab_to_end()
