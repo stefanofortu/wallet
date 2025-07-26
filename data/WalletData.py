@@ -1,6 +1,5 @@
 import pandas as pd
 import logging
-from data.CategoryStructure import CategoryStructure
 
 logger = logging.getLogger("Stefano")
 
@@ -16,23 +15,10 @@ class WalletData:
         self.all_data = data
         self.verify_currency()
         self.filter_out_columns()
-        if main_wallet_selection:
+        if main_wallet_selection    :
             self.select_personal_accounts()
         else:
             self.select_home_accounts()
-        self.check_categories_name()
-
-        mask_loan_debts = self.all_data['category'].isin(['Credito', 'Prestito', "Refunds", "Restituzione credito"])
-        self.df_loan_debts = self.all_data[mask_loan_debts]
-
-        mask_transfer = (self.all_data['category'] == 'TRANSFER')
-        self.df_transfers = self.all_data[mask_transfer]
-
-        mask_contabile = (self.all_data['category'] == 'Contabile')
-        self.df_contabile = self.all_data[mask_contabile]
-
-        self.not_main = self.all_data[(mask_loan_debts | mask_transfer | mask_contabile)]
-        self.df_main = self.all_data[~(mask_loan_debts | mask_transfer | mask_contabile)]
 
     def verify_currency(self):
         currency_list = self.all_data['currency'].unique()
@@ -55,7 +41,7 @@ class WalletData:
 
     def select_personal_accounts(self):
         all_accounts = self.all_data['account'].unique()
-        accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays", "BPM"])
+        accounts_to_keep = list(["Cash", "Carta", "Banca", "Poste", "Barclays"])
         account_to_be_removed = list(set(all_accounts) - set(accounts_to_keep))
         for account in account_to_be_removed:
             self.all_data = self.all_data.drop(
@@ -69,7 +55,7 @@ class WalletData:
 
     def select_home_accounts(self):
         all_accounts = self.all_data['account'].unique()
-        accounts_to_keep = list(["Cash Casa"])
+        accounts_to_keep = list(["BPM", "BNL Casa", "Cash Casa"])
         account_to_be_removed = list(set(all_accounts) - set(accounts_to_keep))
         for account in account_to_be_removed:
             self.all_data = self.all_data.drop(
@@ -80,11 +66,3 @@ class WalletData:
         account_remained = list(set(accounts) ^ set(accounts_to_keep))
         if len(account_remained) > 0:
             logger.info("The following accounts are not present" + str(account_remained))
-
-    def check_categories_name(self):
-        all_category = CategoryStructure.get_basic_categories()
-        categories_in_df = (list(self.all_data["category"].unique()))
-        categories_excess = list(set(categories_in_df) - set(all_category))
-        if len(categories_excess) > 0:
-            raise TypeError("WalletData.check_categories_name() - more categories in import file, ",
-                            categories_excess)

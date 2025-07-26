@@ -39,10 +39,11 @@ class MainWidget(QWidget):
 
         wallets_selection_layout = QVBoxLayout()
         self.main_wallet_checkbox = QCheckBox("Main wallet")
-        self.main_wallet_checkbox.setChecked(True)
+
+        self.main_wallet_checkbox.setChecked(self.project_data.main_wallets)
         self.main_wallet_checkbox.stateChanged.connect(self.main_wallet_checkbox_toggled)
         self.home_wallet_checkbox = QCheckBox("Home wallets")
-        self.home_wallet_checkbox.setChecked(False)
+        self.home_wallet_checkbox.setChecked(not self.project_data.main_wallets)
         self.home_wallet_checkbox.stateChanged.connect(self.home_wallet_checkbox_toggled)
 
         wallets_selection_layout.addWidget(self.main_wallet_checkbox)
@@ -96,7 +97,12 @@ class MainWidget(QWidget):
         ############### LOGGING  ###############
         self.logging_text_browser = QTextBrowser(self)
         LoggingStream.stdout().messageWritten.connect(self.logging_text_browser.insertPlainText)
-        LoggingStream.stderr().messageWritten.connect(self.logging_text_browser.insertPlainText)
+        #LoggingStream.stderr().messageWritten.connect(self.logging_text_browser.insertPlainText)
+        for handler in logger.handlers:
+            if hasattr(handler, "name"):
+                if handler.name == "qt_logging":
+                    handler.add_widget(self.logging_text_browser)
+
         widget_main_layout.addWidget(self.logging_text_browser)
         ############### SET MAIN LAYOUT
         self.setLayout(widget_main_layout)
@@ -120,6 +126,7 @@ class MainWidget(QWidget):
             logger.info("file selected: %s", str(fileName))
             self.input_file_path_label.setText(fileName)
             self.project_data.set_input_file_name(input_filename=fileName)
+            self.logging_text_browser.clear()
 
     def save_year_selected(self, text):
         self.project_data.set_year_selected(text)
@@ -133,11 +140,16 @@ class MainWidget(QWidget):
     def main_wallet_checkbox_toggled(self):
         if self.main_wallet_checkbox.isChecked():
             self.home_wallet_checkbox.setChecked(False)
+            self.project_data.set_main_wallets(True)
+
         else:
             self.home_wallet_checkbox.setChecked(True)
+            self.project_data.set_main_wallets(False)
 
     def home_wallet_checkbox_toggled(self):
         if self.home_wallet_checkbox.isChecked():
             self.main_wallet_checkbox.setChecked(False)
+            self.project_data.set_main_wallets(False)
         else:
             self.main_wallet_checkbox.setChecked(True)
+            self.project_data.set_main_wallets(True)

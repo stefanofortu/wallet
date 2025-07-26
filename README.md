@@ -39,8 +39,8 @@ Process:
 1. carica il file csv, 
 	1. Ccontrolla che la currency sia euro su tutti e poi cancella la colonna 
 	2. Cancella le colonne di non interesse
-	3. Seleziona solo gli account di interesse
-2. Seleziona solo gli account di interesse: "Cash", "Carta", "Banca", "Poste", "Barclays", "BPM"
+2. A seconda della selezione, setta solo gli account di interesse:
+   1. Se interesse "Cash", "Carta", "Banca", "Poste", "Barclays", "BPM"
 4. Crea il dataframe dei transfer e quello delle spese correnti
 5. Per il dataframe normale: 
 	- Seleziona i dati solo nel periodo di interesse
@@ -50,36 +50,48 @@ Process:
    
 **OUT** : walletData: dati importati e filtrati
 
-## 2. CategoryImport
+## 2. Category_Label_Checker
 **IN** : walletData
 
-**FDT** : CategoryImport 
+**FDT** : Category_Label_Checker
 Process:
-1. riempie la lista delle categorie 
-2. TO DO : splitta tra #in #out e #risparmi
-   3. le colonne di categoryResult dovranno essere ['category', '#in', '#out', '#risparmi']
-2. TO DO verifica che le categorie con importo 0 siano tali
-3. TO 
+1. check_categories_name(): controlla che i nomi delle categorie siano corrette
+2. Verifica che le categorie con importo 0 siano tali
 
-**OUT** : categoryResult: dati importati e filtrati
+**OUT** : bool
 
-## 3. Category Hierarchy
-**IN** : categoryResult
+## 3. Category Classification
+**IN** : class WalletData
 
-**FDT** : CategoryImport
-Process
-1. calcola le categorie di primo livello
+**FDT** : 
+1. Splitta tra #in #out e #risparmi
+2. calcola le somme per ogni categoria base
+Ke colonne di Results dovranno essere ['category', '#in', '#out', '#risparmi', '#no_tags']
+3. Fa alcune verifiche sulle categorie basiche ???
 
-**OUT** : categoryResult
+**OUT** : class Results
 
-## 4. File Export
-**IN** : categoryResult, outfile
+## 4. Category Structurer
+**IN** : class Results
 
-**FDT** : scrive su file excel il df
-Process
-1. calcola le categorie di primo livello
+**FDT** : 
+1. Splitta tra #in #out e #risparmi
+2. calcola le somme per ogni gruppi di categorie (main_categories)
+3. Fa alcune verifiche sulle categorie basiche ???
 
-**OUT** : categoryResult
+**OUT** : class Results
+
+## 5. Group Creator
+**IN** : wallet_category_results
+**FDT** : 
+1. Calcola i gruppi di spesa
+2. Verifica che i segni dei gruppi di spesa siano corretti
+**OUT** : group_results (instance of Results)
+
+## 6. File Export
+**IN** : group_results , Piano_Spesa_Template_v02
+**FDT** : scrive su file excel il df del categoryResult
+**OUT** : File excel
 
 
 # Regole di utilizzo categorie
