@@ -16,7 +16,7 @@ class CategoryClassification:
         if not isinstance(data, WalletData):
             logger.error("Category_Label_Checker(): Wrong input type for data")
 
-        # data.df_main.amount = data.df_main.amount.round(2)
+        data.all_data.amount = data.all_data.amount.round(2)
         category_results = Results()
         for category in self.all_category:
             filtered_data_in = data.all_data[(data.all_data["category"] == category) &

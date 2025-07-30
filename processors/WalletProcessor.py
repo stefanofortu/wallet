@@ -31,7 +31,7 @@ class WalletProcessor:
         )
         data = data_import.get_imported_data()
 
-        category_and_label_checker = CategoryLabelChecker(main_wallet_selection = self.main_wallet_selection)
+        category_and_label_checker = CategoryLabelChecker(main_wallet_selection=self.main_wallet_selection)
         results_ok = category_and_label_checker.process(data)
         if not results_ok:
             logger.error("CategoryLabelChecker outcome not OK")
@@ -47,7 +47,8 @@ class WalletProcessor:
         main_category_results.df.to_excel("main_category_results.xlsx")
 
         group_creator = GroupCreator()
-        group_results = group_creator.process(wallet_category_results)
+        group_results = group_creator.process(wallet_category_results=wallet_category_results, wallet_data=data)
+        group_results.df.to_excel("group_results.xlsx")
 
         excel_writer = ExcelWriter(filename_in="Piano_Spesa_Template_v02.xlsx",
                                    template_sheetname="Template",

@@ -1,5 +1,6 @@
 import pandas as pd
 import logging
+from tabulate import tabulate
 
 logger = logging.getLogger("Stefano")
 
@@ -15,7 +16,7 @@ class WalletData:
         self.all_data = data
         self.verify_currency()
         self.filter_out_columns()
-        if main_wallet_selection    :
+        if main_wallet_selection:
             self.select_personal_accounts()
         else:
             self.select_home_accounts()
@@ -27,9 +28,9 @@ class WalletData:
 
     def filter_out_columns(self):
         self.all_data.drop(columns=['ref_currency_amount', 'payment_type', 'payment_type_local',
-                                'gps_latitude', 'gps_longitude', 'gps_accuracy_in_meters',
-                                'warranty_in_month', 'transfer', 'payee', "currency",
-                                'envelope_id', 'custom_category'], inplace=True)
+                                    'gps_latitude', 'gps_longitude', 'gps_accuracy_in_meters',
+                                    'warranty_in_month', 'transfer', 'payee', "currency",
+                                    'envelope_id', 'custom_category'], inplace=True)
         self.all_data.reset_index(inplace=True, drop=True)
 
         column_list = list(self.all_data.columns)
@@ -66,3 +67,20 @@ class WalletData:
         account_remained = list(set(accounts) ^ set(accounts_to_keep))
         if len(account_remained) > 0:
             logger.info("The following accounts are not present" + str(account_remained))
+
+    @staticmethod
+    def print_df(dataframe, category=False, note=False, labels=False):
+        df = dataframe.copy()
+        df['date'] = df['date'].dt.strftime('%d-%m-%Y')
+        column_list = ['date', 'account', 'amount']
+        if category:
+            column_list.append('category')
+        if note:
+            column_list.append('note')
+            df['note'] = df['note'].str.slice(0, 25)
+
+        if labels:
+            column_list.append('labels')
+
+        print()
+        print(tabulate(df[column_list], headers='keys', tablefmt='tsv', showindex=False))

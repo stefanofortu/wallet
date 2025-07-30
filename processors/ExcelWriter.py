@@ -1,7 +1,7 @@
 import shutil
 from datetime import datetime
 import openpyxl
-from openpyxl.styles import Alignment, Font
+from openpyxl.styles import Alignment, Font, PatternFill
 from data.Results import Results
 from data.CategoryStructure import CategoryStructure
 from data.ExpenseGroups import ExpenseGroups
@@ -100,6 +100,10 @@ class ExcelWriter:
         no_tags_column = 6
 
         row_num = 130
+
+        fill_level_0 = PatternFill(start_color="bbdae2", end_color="bbdae2", fill_type="solid")
+        fill_level_1 = PatternFill(start_color="d6e9ee", end_color="d6e9ee", fill_type="solid")
+
         self.ws.cell(row_num, category_column).value = "Categories"
         self.ws.cell(row_num, in_column, "in")
         self.ws.cell(row_num, savings_in_column, "savings in")
@@ -122,6 +126,9 @@ class ExcelWriter:
             self.ws.cell(row_num, out_column, main_category_results.df.loc[main_cat]["out"])
             self.ws.cell(row_num, savings_out_column, main_category_results.df.loc[main_cat]["savings_out"])
             self.ws.cell(row_num, no_tags_column, main_category_results.df.loc[main_cat]["no_tags"])
+            for row in self.ws.iter_rows(min_row=row_num, max_row=row_num, min_col=in_column, max_col=no_tags_column):
+                for cell in row:
+                    cell.fill = fill_level_0
             row_num += 1
             start_group_level_1 = row_num
             for cat in list(CategoryStructure.categories[main_cat]):
@@ -134,6 +141,12 @@ class ExcelWriter:
                 end_group_level_1 = row_num
                 row_num += 1
             excel_structure["level1"].append((start_group_level_1, end_group_level_1))
+
+            fill = PatternFill(start_color="D0E0E3", end_color="D0E0E3", fill_type="solid")
+            for row in self.ws.iter_rows(min_row=start_group_level_1, max_row=end_group_level_1,
+                                         min_col=in_column, max_col=no_tags_column):
+                for cell in row:
+                    cell.fill = fill_level_1
 
         block_row_num_end = row_num
         for t in excel_structure["level1"]:
@@ -166,6 +179,10 @@ class ExcelWriter:
         excel_structure = {"level1": [], "level2": []}
         row_num = 50
 
+        fill_level_0 = PatternFill(start_color="bbdae2", end_color="bbdae2", fill_type="solid")
+        fill_level_1 = PatternFill(start_color="d6e9ee", end_color="d6e9ee", fill_type="solid")
+        fill_level_2 = PatternFill(start_color="f1f8f9", end_color="f1f8f9", fill_type="solid")
+
         self.ws.cell(row_num, category_column).value = "Categories"
         self.ws.cell(row_num, in_column, "in")
         self.ws.cell(row_num, savings_in_column, "savings in")
@@ -186,6 +203,9 @@ class ExcelWriter:
             self.ws.cell(row_num, out_column, group_results.df.loc[main_group]["out"])
             self.ws.cell(row_num, savings_out_column, group_results.df.loc[main_group]["savings_out"])
             self.ws.cell(row_num, no_tags_column, group_results.df.loc[main_group]["no_tags"])
+            for row in self.ws.iter_rows(min_row=row_num, max_row=row_num, min_col=in_column, max_col=no_tags_column):
+                for cell in row:
+                    cell.fill = fill_level_0
             row_num += 1
             start_group_level_1 = row_num
             for sub_group in ExpenseGroups.expense_groups[main_group].keys():
@@ -195,6 +215,9 @@ class ExcelWriter:
                 self.ws.cell(row_num, out_column, group_results.df.loc[sub_group]["out"])
                 self.ws.cell(row_num, savings_out_column, group_results.df.loc[sub_group]["savings_out"])
                 self.ws.cell(row_num, no_tags_column, group_results.df.loc[sub_group]["no_tags"])
+                for row in self.ws.iter_rows(min_row=row_num, max_row=row_num,min_col=in_column, max_col=no_tags_column):
+                    for cell in row:
+                        cell.fill = fill_level_1
                 row_num += 1
                 start_group_level_2 = row_num
                 for cat in list(ExpenseGroups.expense_groups[main_group][sub_group]):
@@ -208,6 +231,11 @@ class ExcelWriter:
                     end_group_level_1 = row_num
                     end_group_level_2 = row_num
                     row_num += 1
+                    for row in self.ws.iter_rows(min_row=start_group_level_2, max_row=end_group_level_2,
+                                                 min_col=in_column, max_col=no_tags_column):
+                        for cell in row:
+                            cell.fill = fill_level_2
+
                 excel_structure["level2"].append((start_group_level_2, end_group_level_2))
             excel_structure["level1"].append((start_group_level_1, end_group_level_1))
 

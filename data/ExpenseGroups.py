@@ -8,7 +8,6 @@ class ExpenseGroups:
     expense_groups = {
         "Redditi": {
             "Income": ["Salary", "Interessi & Dividendi", "Regali"]
-
         },
         "Essenziali_Dovute": {
             "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family"],
@@ -82,7 +81,7 @@ class ExpenseGroups:
         null_balance_cat = ExpenseGroups.get_categories_null_balance()
 
         return list([x for x in CategoryStructure.get_basic_categories()
-                     if x not in income_cat and x not in null_balance_cat] )
+                     if x not in income_cat and x not in null_balance_cat])
         # \
         # + \
         # list(CategoryStructure.expense_groups["Prestiti_Debiti"]["Crediti"])
@@ -90,6 +89,10 @@ class ExpenseGroups:
     @staticmethod
     def get_expense_to_del():
         return list(ExpenseGroups.expense_groups["ALTRO"]["Spese_a_zero"])
+
+    @staticmethod
+    def get_expense_from_group(group, subgroup):
+        return list(ExpenseGroups.expense_groups[group][subgroup])
 
     @staticmethod
     def check_expense_group():
