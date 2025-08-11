@@ -22,7 +22,7 @@ class QtLoggingStreamHandler(logging.Handler):
         elif level >= logging.ERROR:
             color = "red"
         elif level >= logging.WARNING:
-            color = "orange"
+            color = "orangered"
         elif level >= logging.INFO:
             color = "green"
         else:

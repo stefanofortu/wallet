@@ -41,10 +41,9 @@ class DataImporter:
             logger.error("Error in timestamp_end_date()", e)
             raise TypeError
 
-        filtered_data = self.wallet_data.all_data[(self.wallet_data.all_data["date"] >= timestamp_start_date) &
+        self.wallet_data.all_data = self.wallet_data.all_data[(self.wallet_data.all_data["date"] >= timestamp_start_date) &
                                                   (self.wallet_data.all_data["date"] <= timestamp_end_date)]
-        filtered_data.reset_index(inplace=True)
-        self.wallet_data.all_data = filtered_data
+        self.wallet_data.all_data.reset_index(inplace=True, drop=True)
         logger.info("Filtering data by start and end time selected: DONE")
 
     def get_imported_data(self) -> WalletData:

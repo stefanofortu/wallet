@@ -86,31 +86,51 @@ class GroupCreator:
 
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Crediti")
-        if sum_result != 0:
+        logger.info(f"Check total sum of the category Credit...DONE")
+        if sum_result == 0:
+            logger.info(f"Total sum of the category Credit is {sum_result}")
+        else:
+            logger.warning(f"Total sum of the category Credit is {sum_result}")
             self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
                                         subgroup_name="Crediti", computed_sum=sum_result)
 
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Prestiti")
-        if sum_result != 0:
+        logger.info(f"Check total sum of the category Prestiti...DONE")
+        if sum_result == 0:
+            logger.info(f"Total sum of the category Prestiti is {sum_result}")
+        else:
+            logger.warning(f"Total sum of the category Prestiti is {sum_result}")
             self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
                                         subgroup_name="Prestiti", computed_sum=sum_result)
 
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Trasferimenti")
-        if sum_result != 0:
+        logger.info(f"Check total sum of the category Trasferimenti...DONE")
+        if sum_result == 0:
+            logger.info(f"Total sum of the category Trasferimenti is {sum_result}")
+        else:
+            logger.warning(f"Total sum of the category Trasferimenti is {sum_result}")
             self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
                                         subgroup_name="Trasferimenti", computed_sum=sum_result)
 
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Contabile")
-        if sum_result != 0:
+        logger.info(f"Check total sum of the category Contabile...DONE")
+        if sum_result == 0:
+            logger.info(f"Total sum of the category Contabile is {sum_result}")
+        else:
+            logger.warning(f"Total sum of the category Contabile is {sum_result}")
             self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
                                         subgroup_name="Contabile", computed_sum=sum_result)
 
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Salary_IN_OUT")
-        if sum_result != 0:
+        logger.info(f"Check total sum of the category Salary_IN_OUT...DONE")
+        if sum_result == 0:
+            logger.info(f"Total sum of the category Salary_IN_OUT is {sum_result}")
+        else:
+            logger.warning(f"Total sum of the category Salary_IN_OUT is {sum_result}")
             self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
                                         subgroup_name="Salary_IN_OUT", computed_sum=sum_result)
 
@@ -138,7 +158,8 @@ class GroupCreator:
 
     @staticmethod
     def find_data_not_zero_sum(wallet_data, group_name, subgroup_name, computed_sum):
-        logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......")
+        #logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......")
+        logger.info(f'"################### {subgroup_name} START #######################"')
         category_list = (ExpenseGroups.get_expense_from_group(group=group_name, subgroup=subgroup_name))
 
         mask_filtered_df = wallet_data.all_data['category'].isin(category_list)
@@ -146,33 +167,46 @@ class GroupCreator:
         filtered_df['transaction_ID'] = filtered_df['note'].str.extract(r'\[(.*?)\]')
         # print(filtered_df[['date', 'account', 'category', 'amount', 'transaction_ID']])
 
-        if filtered_df['transaction_ID'].isna().any():
-            logger.warning(f"filtered_df contains empty label")
+        df_transaction_id_nan = filtered_df[filtered_df['transaction_ID'].isna()]
+        df_transaction_id_not_nan = filtered_df[filtered_df['transaction_ID'].notna()]
 
-        filtered_df_no_nan = filtered_df.dropna()
+        #filtered_df_no_nan = filtered_df.dropna()
         # print(filtered_df_no_nan[['date', 'account', 'category', 'amount', 'transaction_ID']])
 
         # Conta quante volte ciascun trasferimento ha una specifica data
-        conteggio = filtered_df_no_nan['transaction_ID'].value_counts()
+        # conteggio = df_transaction_id_not_nan['transaction_ID'].value_counts()
+
+        list_id = df_transaction_id_not_nan['transaction_ID'].unique()
+        for id in list_id:
+            df_with_id = df_transaction_id_not_nan[df_transaction_id_not_nan['transaction_ID'] == id ]
+            sum_df_with_id = round(df_with_id['amount'].sum(), 2)
+            if sum_df_with_id != 0:
+                logger.warning(f"Transitions with ID {id} has sum {sum_df_with_id}")
+
+        if not df_transaction_id_nan.empty:
+            logger.warning(f"filtered_df contains transitions with no ID")
+            WalletData.print_df_tabulated(df_transaction_id_nan)
         # Seleziona i valori che compaiono almeno due volte
-        value_with_at_least_one_match = conteggio[conteggio >= 2].index
+        #value_with_at_least_one_match = conteggio[conteggio >= 2].index
 
-        df_with_at_least_one_match = filtered_df[filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
-        sum_with_at_least_one_match = round(df_with_at_least_one_match['amount'].sum(), 2)
+        #df_with_at_least_one_match = filtered_df[filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
+        #sum_with_at_least_one_match = round(df_with_at_least_one_match['amount'].sum(), 2)
 
-        if sum_with_at_least_one_match != 0.0:
-            logger.warning(f"sum_with_at_least_one_match != 0.0 : {sum_with_at_least_one_match}")
-            logger.info(f"df_with_at_least_one_match: ")
-            print(df_with_at_least_one_match[['category', 'amount', 'transaction_ID']])
+        #if sum_with_at_least_one_match != 0.0:
+        #    logger.warning(f"sum_with_at_least_one_match != 0.0 : {sum_with_at_least_one_match}")
+        #    logger.info(f"df_with_at_least_one_match: ")
+        #    wallet_data.print_df_tabulated(df_with_at_least_one_match)
 
-        df_with_no_match = filtered_df[~filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
-        sum_with_no_match = round(df_with_no_match['amount'].sum(), 2)
+        #df_with_no_match = filtered_df[~filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
+        #sum_with_no_match = round(df_with_no_match['amount'].sum(), 2)
 
-        if sum_with_no_match != computed_sum or sum_with_no_match == 0.0:
-            logger.warning(f"sum_with_no_match != computed_sum: {sum_with_no_match}, {computed_sum}")
-            logger.info(f"df_with_no_match: ")
-            print(df_with_no_match[['category', 'amount', 'transaction_ID']])
+        #if sum_with_no_match != computed_sum or sum_with_no_match == 0.0:
+        #    logger.warning(f"sum_with_no_match != computed_sum: {sum_with_no_match}, {computed_sum}")
+        #    print()
+        #    print(df_with_no_match[['category', 'amount', 'transaction_ID']])
 
-        if sum_with_no_match == computed_sum:
-            logger.info(f"sum_with_no_match == computed_sum: {sum_with_no_match}")
-        logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......DONE")
+        #if sum_with_no_match == computed_sum:
+        #    logger.info(f"sum_with_no_match == computed_sum: {sum_with_no_match}")
+        #logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......DONE")
+        logger.info(f'"################### {subgroup_name} END #######################"')
+

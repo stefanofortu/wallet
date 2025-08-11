@@ -165,17 +165,17 @@ class CategoryLabelChecker:
             if len(labels_imported_no_nan) > 0:
                 logger.error(f"verify_single_labels() for {marker} - labels not empty:" + str(labels_imported_no_nan))
                 logger.error(f"wrong_label_list :" + str(wrong_label_list))
-                WalletData.print_df(df_no_nan, note=True, labels=True)
+                WalletData.print_df(df_no_nan, note=True, labels=True, category=True, amount=False)
 
         if values_acceptable == "Not Nan" or values_acceptable == "mixed":
             if len(wrong_label_list) > 0:
                 logger.error(f"verify_single_labels() for {marker}. Label not in input list {wrong_label_list}")
-                WalletData.print_df(df_wrong_label, note=True, labels=True)
+                WalletData.print_df(df_wrong_label, note=True, labels=True, category=True, amount=False)
 
         if values_acceptable == "Not Nan":
             if not df_nan.empty:
                 logger.error(f"verify_single_labels() for {marker}. Nan label present")
-                WalletData.print_df(df_nan, note=True, labels=True)
+                WalletData.print_df(df_nan, note=True, labels=True, category=True, amount=False)
         # logger.info(f"marker end : {marker}")
 
     @staticmethod
@@ -185,21 +185,20 @@ class CategoryLabelChecker:
             raise TypeError("check_all_labels_are_positive(): Wrong input type for data")
         if sign == "positive":
             df_results = data.all_data.loc[(data.all_data["labels"] == label) &
-                                           (data.all_data["amount"] < 0),
-                                           ["date", "account", "amount"]]  # == label ]).loc[:, ["amount"]] < 0
+                                           (data.all_data["amount"] < 0), :]
         elif sign == "negative":
             df_results = data.all_data.loc[(data.all_data["labels"] == label) &
-                                           (data.all_data["amount"] > 0),
-                                           ["date", "account", "amount"]]
+                                           (data.all_data["amount"] > 0), :]
         else:
             raise TypeError("CategoryImporter.check_all_labels_value() - sign parameters incorrect",
                             sign)
 
         if not df_results.empty:
             logger.error("Found transactions where label %s is not %s" % (label, sign))
-            print(df_results)
+            WalletData.print_df(df_results, category=True, note=True, labels=True, amount=True)
 
-    def find_transfers_inside_outside_wallet(self, df_transfers):
+    @staticmethod
+    def find_transfers_inside_outside_wallet(df_transfers):
         logger.info("Checking the transfers inside/outside of the wallet")
         # Conta quante volte ciascun trasferimento ha una specifica data
         conteggio = df_transfers['date'].value_counts()
@@ -217,11 +216,9 @@ class CategoryLabelChecker:
         # print(f"df_transfers_doppi_for_print: {df_transfers_doppi_for_print}")
         somma_df_transfers_doppi = round(df_transfers_doppi['amount'].sum(), 2)
         logger.info(f"Somma colonna importi df_transfers_doppi: {somma_df_transfers_doppi}")
-        df_senza_transfers_doppi_for_print = df_senza_transfers_doppi[[
-            "account", "category", "amount", "type", "date", "labels"]]
-        if not df_senza_transfers_doppi_for_print.empty:
-            print()
-            print(df_senza_transfers_doppi_for_print)
+        if not df_senza_transfers_doppi.empty:
+            WalletData.print_df(df_senza_transfers_doppi,
+                                amount=True, category=True, note=True, labels=False)
         somma_df_senza_transfers_doppi = round(df_senza_transfers_doppi['amount'].sum(), 2)
         logger.info(f"Somma colonna importi df_transfers_doppi: {somma_df_senza_transfers_doppi}")
 

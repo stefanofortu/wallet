@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Wallet check")
         self.left = 50
         self.top = 50
-        self.width = 360
+        self.width = 720
         self.height = 720
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setStyleSheet("background-color: rgb(218,228,231)")
