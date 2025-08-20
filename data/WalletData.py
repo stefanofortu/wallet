@@ -20,6 +20,7 @@ class WalletData:
             self.select_personal_accounts()
         else:
             self.select_home_accounts()
+        self.all_data.note = self.all_data.note.fillna('')
 
     def verify_currency(self):
         currency_list = self.all_data['currency'].unique()

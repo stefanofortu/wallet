@@ -52,12 +52,11 @@ class CategoryLabelChecker:
             self.verify_single_labels(dataframe=df_main, labels_list=["in", "out", "risparmi"],
                                       marker="df_main_wallet")
         else:
-            self.verify_single_labels(dataframe=df_main, labels_list=["in", "In_Casa_Stefano", "In_Casa_Severo",
-                                                                      "Out_Casa"],
+            self.verify_single_labels(dataframe=df_main, labels_list=["in","In_Casa_Stefano", "Out_Casa", "In_Casa_Severo"],
                                       marker="df_main_home")
             data.all_data['labels'] = data.all_data['labels'].replace({'In_Casa_Stefano': 'in',
-                                                                       'In_Casa_Severo': 'in',
-                                                                       'Out_Casa': 'out'})
+                                                                     'Out_Casa': 'out',
+                                                                     'In_Casa_Severo': 'in'})
 
         data.all_data['labels'] = data.all_data['labels'].replace('contabile', 'no_tags')
         data.all_data['labels'] = data.all_data['labels'].fillna('no_tags')
@@ -94,21 +93,19 @@ class CategoryLabelChecker:
         if sign == "positive":
             category_list = ExpenseGroups.get_income_categories()
             df_results = data.all_data.loc[(data.all_data["category"].isin(category_list)) &
-                                           (data.all_data["amount"] < 0),
-                                           ["date", "account", "amount", "category"]]
+                                           (data.all_data["amount"] < 0), :]
         elif sign == "negative":
             category_list = ExpenseGroups.get_expense_categories()
 
             df_results = data.all_data.loc[(data.all_data["category"].isin(category_list)) &
-                                           (data.all_data["amount"] > 0),
-                                           ["date", "account", "amount", "category"]]
+                                           (data.all_data["amount"] > 0), :]
         else:
             raise TypeError("CategoryImporter.check_all_category_sign() - sign parameters incorrect",
                             sign)
 
         if not df_results.empty:
             logger.error("Found transactions where category is not %s" % sign)
-            WalletData.print_df(dataframe=df_results, category=True)
+            WalletData.print_df(dataframe=df_results, category=True, note=True, amount=True)
 
     @staticmethod
     def verify_to_del_categories(data):
@@ -217,7 +214,6 @@ class CategoryLabelChecker:
         logger.info(f"Somma colonna importi CON df_transfers_doppi: {somma_df_transfers_doppi}")
         if not df_senza_transfers_doppi.empty:
             logger.info(f"Stampo i dataframe dove non ci sono date con due occorrenze")
-            #print(df_senza_transfers_doppi[["date","conteggio", "note"]])
             WalletData.print_df(df_senza_transfers_doppi,
                                 amount=True, category=True, note=True, labels=False)
         somma_df_senza_transfers_doppi = round(df_senza_transfers_doppi['amount'].sum(), 2)

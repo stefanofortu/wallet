@@ -74,65 +74,45 @@ class GroupCreator:
 
         logger.info("Merge of categories into main categories: DONE")
 
-        # "Spese_a_zero": ["Education", "Correzioni", "Prelievo", "Work", "Placeholder", "Check Balance"],
-        # "Crediti": ["Credito", "Restituzione credito"],
-        # "Prestiti": ["Prestito", "Refunds"],
-        # "Trasferimenti": ["TRANSFER"],
-        # "Contabile": ["Contabile"],
-        # "Salary_IN_OUT": ["Salary OUT", "Salary IN"]
-
         self.check_amounts_both_positive_and_negative(group_results=group_results)
         logger.info("Check sign of the main categories: DONE")
 
+        #################### CREDITI ####################
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Crediti")
         logger.info(f"Check total sum of the category Credit...DONE")
-        if sum_result == 0:
-            logger.info(f"Total sum of the category Credit is {sum_result}")
-        else:
-            logger.warning(f"Total sum of the category Credit is {sum_result}")
-            self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
-                                        subgroup_name="Crediti", computed_sum=sum_result)
 
+        self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
+                                    subgroup_name="Crediti", computed_sum=sum_result)
+
+        #################### PRESTITI ####################
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Prestiti")
         logger.info(f"Check total sum of the category Prestiti...DONE")
-        if sum_result == 0:
-            logger.info(f"Total sum of the category Prestiti is {sum_result}")
-        else:
-            logger.warning(f"Total sum of the category Prestiti is {sum_result}")
-            self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
-                                        subgroup_name="Prestiti", computed_sum=sum_result)
 
+        self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
+                                    subgroup_name="Prestiti", computed_sum=sum_result)
+
+        #################### TRASFERIMENTI ####################
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Trasferimenti")
         logger.info(f"Check total sum of the category Trasferimenti...DONE")
-        if sum_result == 0:
-            logger.info(f"Total sum of the category Trasferimenti is {sum_result}")
-        else:
-            logger.warning(f"Total sum of the category Trasferimenti is {sum_result}")
-            self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
-                                        subgroup_name="Trasferimenti", computed_sum=sum_result)
+        logger.info(f"Check of all the trasnfers by ID makes no sense")
 
+        #################### CONTABILE ####################
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Contabile")
         logger.info(f"Check total sum of the category Contabile...DONE")
-        if sum_result == 0:
-            logger.info(f"Total sum of the category Contabile is {sum_result}")
-        else:
-            logger.warning(f"Total sum of the category Contabile is {sum_result}")
-            self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
-                                        subgroup_name="Contabile", computed_sum=sum_result)
 
+        self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
+                                    subgroup_name="Contabile", computed_sum=sum_result)
+
+        #################### SALARY IN/OUT ####################
         sum_result = self.check_group_has_sum_zero(group_results=group_results, group_name="ALTRO",
                                                    subgroup_name="Salary_IN_OUT")
         logger.info(f"Check total sum of the category Salary_IN_OUT...DONE")
-        if sum_result == 0:
-            logger.info(f"Total sum of the category Salary_IN_OUT is {sum_result}")
-        else:
-            logger.warning(f"Total sum of the category Salary_IN_OUT is {sum_result}")
-            self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
-                                        subgroup_name="Salary_IN_OUT", computed_sum=sum_result)
+        self.find_data_not_zero_sum(wallet_data=wallet_data, group_name="ALTRO",
+                                    subgroup_name="Salary_IN_OUT", computed_sum=sum_result)
 
         return group_results
 
@@ -151,9 +131,9 @@ class GroupCreator:
             row_sum = round(row_sum.iloc[0], 2)
 
         if row_sum == 0:
-            logger.info(f"Sum of the group {subgroup_name} is zero")
+            logger.info(f"GROUP RESULT: {subgroup_name} is zero")
         else:
-            logger.warning(f"Sum of the group {subgroup_name} is not zero: {row_sum}")
+            logger.warning(f"GROUP RESULT: {subgroup_name} is not zero: {row_sum}")
         return row_sum
 
     @staticmethod
