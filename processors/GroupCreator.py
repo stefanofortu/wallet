@@ -158,7 +158,7 @@ class GroupCreator:
 
     @staticmethod
     def find_data_not_zero_sum(wallet_data, group_name, subgroup_name, computed_sum):
-        #logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......")
+        # logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......")
         logger.info(f'"################### {subgroup_name} START #######################"')
         category_list = (ExpenseGroups.get_expense_from_group(group=group_name, subgroup=subgroup_name))
 
@@ -170,7 +170,7 @@ class GroupCreator:
         df_transaction_id_nan = filtered_df[filtered_df['transaction_ID'].isna()]
         df_transaction_id_not_nan = filtered_df[filtered_df['transaction_ID'].notna()]
 
-        #filtered_df_no_nan = filtered_df.dropna()
+        # filtered_df_no_nan = filtered_df.dropna()
         # print(filtered_df_no_nan[['date', 'account', 'category', 'amount', 'transaction_ID']])
 
         # Conta quante volte ciascun trasferimento ha una specifica data
@@ -178,7 +178,7 @@ class GroupCreator:
 
         list_id = df_transaction_id_not_nan['transaction_ID'].unique()
         for id in list_id:
-            df_with_id = df_transaction_id_not_nan[df_transaction_id_not_nan['transaction_ID'] == id ]
+            df_with_id = df_transaction_id_not_nan[df_transaction_id_not_nan['transaction_ID'] == id]
             sum_df_with_id = round(df_with_id['amount'].sum(), 2)
             if sum_df_with_id != 0:
                 logger.warning(f"Transitions with ID {id} has sum {sum_df_with_id}")
@@ -187,26 +187,25 @@ class GroupCreator:
             logger.warning(f"filtered_df contains transitions with no ID")
             WalletData.print_df_tabulated(df_transaction_id_nan)
         # Seleziona i valori che compaiono almeno due volte
-        #value_with_at_least_one_match = conteggio[conteggio >= 2].index
+        # value_with_at_least_one_match = conteggio[conteggio >= 2].index
 
-        #df_with_at_least_one_match = filtered_df[filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
-        #sum_with_at_least_one_match = round(df_with_at_least_one_match['amount'].sum(), 2)
+        # df_with_at_least_one_match = filtered_df[filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
+        # sum_with_at_least_one_match = round(df_with_at_least_one_match['amount'].sum(), 2)
 
-        #if sum_with_at_least_one_match != 0.0:
+        # if sum_with_at_least_one_match != 0.0:
         #    logger.warning(f"sum_with_at_least_one_match != 0.0 : {sum_with_at_least_one_match}")
         #    logger.info(f"df_with_at_least_one_match: ")
         #    wallet_data.print_df_tabulated(df_with_at_least_one_match)
 
-        #df_with_no_match = filtered_df[~filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
-        #sum_with_no_match = round(df_with_no_match['amount'].sum(), 2)
+        # df_with_no_match = filtered_df[~filtered_df['transaction_ID'].isin(value_with_at_least_one_match)]
+        # sum_with_no_match = round(df_with_no_match['amount'].sum(), 2)
 
-        #if sum_with_no_match != computed_sum or sum_with_no_match == 0.0:
+        # if sum_with_no_match != computed_sum or sum_with_no_match == 0.0:
         #    logger.warning(f"sum_with_no_match != computed_sum: {sum_with_no_match}, {computed_sum}")
         #    print()
         #    print(df_with_no_match[['category', 'amount', 'transaction_ID']])
 
-        #if sum_with_no_match == computed_sum:
+        # if sum_with_no_match == computed_sum:
         #    logger.info(f"sum_with_no_match == computed_sum: {sum_with_no_match}")
-        #logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......DONE")
+        # logger.info(f"find_data_not_zero_sum: {group_name}, {subgroup_name}.......DONE")
         logger.info(f'"################### {subgroup_name} END #######################"')
-

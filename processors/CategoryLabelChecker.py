@@ -52,11 +52,12 @@ class CategoryLabelChecker:
             self.verify_single_labels(dataframe=df_main, labels_list=["in", "out", "risparmi"],
                                       marker="df_main_wallet")
         else:
-            self.verify_single_labels(dataframe=df_main, labels_list=["In_Casa_Stefano", "Out_Casa", "In_Casa_Severo"],
+            self.verify_single_labels(dataframe=df_main, labels_list=["in", "In_Casa_Stefano", "In_Casa_Severo",
+                                                                      "Out_Casa"],
                                       marker="df_main_home")
-            data.df_main['labels'] = data.df_main['labels'].replace({'In_Casa_Stefano': 'in',
-                                                                     'Out_Casa': 'out',
-                                                                     'In_Casa_Severo': 'in'})
+            data.all_data['labels'] = data.all_data['labels'].replace({'In_Casa_Stefano': 'in',
+                                                                       'In_Casa_Severo': 'in',
+                                                                       'Out_Casa': 'out'})
 
         data.all_data['labels'] = data.all_data['labels'].replace('contabile', 'no_tags')
         data.all_data['labels'] = data.all_data['labels'].fillna('no_tags')
@@ -212,95 +213,14 @@ class CategoryLabelChecker:
         df_senza_transfers_doppi = df_transfers[
             ~df_transfers['date'].isin(valori_con_due_occorrenze)]
 
-        df_transfers_doppi_for_print = df_transfers_doppi[["account", "category", "amount", "type", "date", "labels"]]
-        # print(f"df_transfers_doppi_for_print: {df_transfers_doppi_for_print}")
         somma_df_transfers_doppi = round(df_transfers_doppi['amount'].sum(), 2)
-        logger.info(f"Somma colonna importi df_transfers_doppi: {somma_df_transfers_doppi}")
+        logger.info(f"Somma colonna importi CON df_transfers_doppi: {somma_df_transfers_doppi}")
         if not df_senza_transfers_doppi.empty:
+            logger.info(f"Stampo i dataframe dove non ci sono date con due occorrenze")
+            #print(df_senza_transfers_doppi[["date","conteggio", "note"]])
             WalletData.print_df(df_senza_transfers_doppi,
                                 amount=True, category=True, note=True, labels=False)
         somma_df_senza_transfers_doppi = round(df_senza_transfers_doppi['amount'].sum(), 2)
         logger.info(f"Somma colonna importi df_transfers_doppi: {somma_df_senza_transfers_doppi}")
 
         logger.info("Checking double transfers: DONE")
-
-    # def verify_single_label_main_wallet(self, data):
-    #     labels_imported = data.all_data['labels'].unique()
-    #     wrong_label = False
-    #     empty_label = False
-    #     for label in labels_imported:
-    #         if isinstance(label, str):
-    #             if label != "in" and label != "out" and label != "risparmi" and label != "no_tags":
-    #                 wrong_label = True
-    #         else:
-    #             if math.isnan(label):  # (labels_imported.isna()).any(axis=None):
-    #                 empty_label = True
-    #
-    #     if empty_label or wrong_label:
-    #         logger.info("all labels imported:" + str(labels_imported))
-    #         filtered_data = data.all_data[(data.all_data["labels"] != "in") &
-    #                                       (data.all_data["labels"] != "out") &
-    #                                       (data.all_data["labels"] != "risparmi") &
-    #                                       (data.all_data["labels"] != "no_tags")]
-    #         logger.info(filtered_data[['date', 'account', 'category', 'labels']])
-    #         if wrong_label:
-    #             raise ValueError('verify_single_label(). Label not in/out/savings/no_tags')
-    #         if empty_label:
-    #             raise ValueError('verify_single_label(). Label empty')
-    #
-    # def verify_single_label_home_wallet(self, data):
-    #     labels_imported = data.all_data['labels'].unique()
-    #     wrong_label = False
-    #     empty_label = False
-    #     for label in labels_imported:
-    #         if isinstance(label, str):
-    #             if label != "In_Casa_Stefano" and label != "Out_Casa" and label != "in" and label != "In_Casa_Severo":
-    #                 wrong_label = True
-    #         else:
-    #             if math.isnan(label):  # (labels_imported.isna()).any(axis=None):
-    #                 empty_label = True
-    #
-    #     if empty_label or wrong_label:
-    #         logger.info("all labels imported:" + str(labels_imported))
-    #         filtered_data = data.all_data[(data.all_data["labels"] != "In_Casa_Stefano") &
-    #                                       (data.all_data["labels"] != "In_Casa_Severo") &
-    #                                       (data.all_data["labels"] != "in") &
-    #                                       (data.all_data["labels"] != "Out_Casa")]
-    #
-    #         logger.info(filtered_data[['date', 'account', 'category', 'labels']])
-    #         if wrong_label:
-    #             raise ValueError('verify_single_label(). Label not In_Casa_Stefano/Out_Casa/savings')
-    #         if empty_label:
-    #             raise ValueError('verify_single_label(). Label empty')
-    #
-    # def verify_single_label_for_transfers(self, data):
-    #     labels_imported = data.df_transfers['labels'].unique()
-    #     # logger.info("all labels imported:" + str(labels_imported))
-    #     df_noNan = data.df_transfers.dropna(subset=['labels'])
-    #     labels_imported_noNan = df_noNan['labels'].unique()
-    #     # logger.info("labels_imported_noNan:" + str(labels_imported_noNan))
-    #
-    #     wrong_label = False
-    #     empty_label = False
-    #     for label in labels_imported_noNan:
-    #         if isinstance(label, str):
-    #             if label != "In_Casa_Stefano" and label != "In_Casa_Severo" and label != "contabile":
-    #                 wrong_label = True
-    #
-    #     if wrong_label:
-    #         # logger.info("all labels imported:" + str(labels_imported_noNan))
-    #         filtered_data = df_noNan[(df_noNan["labels"] != "In_Casa_Stefano") &
-    #                                  (df_noNan["labels"] != "In_Casa_Severo") &
-    #                                  (df_noNan["labels"] != "contabile")]
-    #         # logger.info(filtered_data[['date', 'account', 'category', 'labels']])
-    #         if wrong_label:
-    #             raise ValueError('verify_single_label(). Label not In_Casa_Stefano/In_Casa_Severo/contabile')
-    #         if empty_label:
-    #             raise ValueError('verify_single_label(). Label empty')
-    #
-    #     # if wrong_label:
-    #     #    print("all labels found in TRANSFERS:" + str(labels_imported))
-    #     #    df_no_nan = self.wallet_data.df_transfers.dropna(subset=['labels'])
-    #     #    filtered_data = df_no_nan[(df_no_nan["labels"] != "contabile")]
-    #     #    logger.info(filtered_data[['date', 'account', 'category', 'labels']])
-    #     #    raise ValueError('verify_single_label_for_transfers(). Label not \'contabile\'')
