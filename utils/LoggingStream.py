@@ -2,6 +2,55 @@ from PySide6.QtCore import Signal
 from PySide6.QtCore import QObject
 import sys
 import logging
+import pandas as pd
+from tabulate import tabulate
+
+
+class DataFrameLogger(QObject):
+    # Signal carrying DataFrame string
+    log_signal = Signal(str)
+
+    def log_dataframe(self, df: pd.DataFrame):
+        """Convert DataFrame to string and emit signal."""
+        df_string = df.to_string(index=False)
+        self.log_signal.emit(tabulate(df, headers='keys', tablefmt='tsv', showindex=False))
+
+    @staticmethod
+    def print_df(dataframe, category=False, note=False, labels=False, amount=False):
+        df = dataframe.copy()
+        df['date'] = df['date'].dt.strftime('%d-%m-%Y')
+        column_list = ['date', 'account']
+        if category:
+            column_list.append('category')
+        if labels:
+            column_list.append('labels')
+        if amount:
+            column_list.append('amount')
+        if note:
+            column_list.append('note')
+            df['note'] = df['note'].replace(r"[\r\n]+", "", regex=True)
+            df['note'] = df['note'].str.slice(0, 30)
+            df['note'] = df['note'].str.ljust(35, "_")
+        print(tabulate(df[column_list], headers='keys', tablefmt='tsv', showindex=False))
+        # Emit log signal
+        df_logger.log_dataframe(df[column_list])
+
+    @staticmethod
+    def print_df_tabulated(dataframe):
+        df = dataframe.copy()
+        df['date'] = df['date'].dt.strftime('%d-%m-%Y')
+        df['note'] = df['note'].replace(r"[\r\n]+", "", regex=True)
+        df['note'] = df['note'].str.slice(0, 30)
+        df['note'] = df['note'].str.ljust(35, "_")
+        column_list = list(df.columns)
+        column_list.remove("type")
+        column_list.remove("labels")
+        print()
+        print(tabulate(df[column_list], headers='keys', tablefmt='tsv', showindex=False))
+
+
+# Initialize logger and connect signal to slot
+df_logger = DataFrameLogger()
 
 
 class QtLoggingStreamHandler(logging.Handler):
@@ -68,7 +117,7 @@ def setup_logger():
     # create PyQt handler which logs INFO message
     qt_logging_handler = QtLoggingStreamHandler()
     qt_logging_handler.setLevel(logging.DEBUG)
-    qt_logging_handler.name = "qt_logging"
+    qt_logging_handler.name = "qt_text_browser_logging"
 
     # formatter = logging.Formatter(fmt=("[%(asctime)s %(levelname)8s]: %(message)s"), datefmt="%H:%M:%S")
     # logger.addHandler(qt_logging_handler)
@@ -89,6 +138,7 @@ def setup_logger():
     logger.addHandler(file_logging_handler)
     logger.addHandler(qt_logging_handler)
     logger.addHandler(console_logging_handler)
+
 
 class LoggingStream(QObject):
     _stdout = None

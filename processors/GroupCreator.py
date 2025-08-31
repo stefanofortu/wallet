@@ -3,9 +3,9 @@ from data.CategoryStructure import CategoryStructure
 from data.ExpenseGroups import ExpenseGroups
 from data.WalletData import WalletData
 import logging
+from utils.LoggingStream import df_logger
 
 logger = logging.getLogger("Stefano")
-
 
 class GroupCreator:
     def __init__(self):
@@ -165,7 +165,7 @@ class GroupCreator:
 
         if not df_transaction_id_nan.empty:
             logger.warning(f"filtered_df contains transitions with no ID")
-            WalletData.print_df_tabulated(df_transaction_id_nan)
+            df_logger.print_df_tabulated(df_transaction_id_nan)
         # Seleziona i valori che compaiono almeno due volte
         # value_with_at_least_one_match = conteggio[conteggio >= 2].index
 

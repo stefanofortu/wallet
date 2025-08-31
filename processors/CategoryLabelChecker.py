@@ -1,11 +1,9 @@
-import math
-
 import pandas
-
 from data.CategoryStructure import CategoryStructure
 from data.ExpenseGroups import ExpenseGroups
 from data.WalletData import WalletData
 import logging
+from utils.LoggingStream import df_logger
 
 logger = logging.getLogger("Stefano")
 
@@ -80,7 +78,7 @@ class CategoryLabelChecker:
             logger.error(f"WalletData.check_categories_name() - more categories in import file : {categories_excess}")
             for cat in categories_excess:
                 df_to_print = data.all_data[data.all_data['category'] == cat]
-                WalletData.print_df(df_to_print, category=True, note=True)
+                df_logger.print_df(df_to_print, category=True, note=True)
 
         logger.info("Checking no other categories than allowed in import file: DONE")
 
@@ -105,7 +103,7 @@ class CategoryLabelChecker:
 
         if not df_results.empty:
             logger.error("Found transactions where category is not %s" % sign)
-            WalletData.print_df(dataframe=df_results, category=True, note=True, amount=True)
+            df_logger.print_df(dataframe=df_results, category=True, note=True, amount=True)
 
     @staticmethod
     def verify_to_del_categories(data):
@@ -115,7 +113,7 @@ class CategoryLabelChecker:
         filtered_data.reset_index(inplace=True, drop=True)
         if filtered_data.size > 0:
             logger.error("Some of the expenses that should be zero are populated")
-            WalletData.print_df(dataframe=filtered_data, category=True)
+            df_logger.print_df(dataframe=filtered_data, category=True, note=True, amount=True)
 
     @staticmethod
     def verify_single_labels(dataframe, labels_list, marker=""):
@@ -163,17 +161,17 @@ class CategoryLabelChecker:
             if len(labels_imported_no_nan) > 0:
                 logger.error(f"verify_single_labels() for {marker} - labels not empty:" + str(labels_imported_no_nan))
                 logger.error(f"wrong_label_list :" + str(wrong_label_list))
-                WalletData.print_df(df_no_nan, note=True, labels=True, category=True, amount=False)
+                df_logger.print_df(df_no_nan, note=True, labels=True, category=True, amount=True)
 
         if values_acceptable == "Not Nan" or values_acceptable == "mixed":
             if len(wrong_label_list) > 0:
                 logger.error(f"verify_single_labels() for {marker}. Label not in input list {wrong_label_list}")
-                WalletData.print_df(df_wrong_label, note=True, labels=True, category=True, amount=False)
+                df_logger.print_df(df_wrong_label, note=True, labels=True, category=True, amount=True)
 
         if values_acceptable == "Not Nan":
             if not df_nan.empty:
                 logger.error(f"verify_single_labels() for {marker}. Nan label present")
-                WalletData.print_df(df_nan, note=True, labels=True, category=True, amount=False)
+                df_logger.print_df(df_nan, note=True, labels=True, category=True, amount=True)
         # logger.info(f"marker end : {marker}")
 
     @staticmethod
@@ -193,7 +191,7 @@ class CategoryLabelChecker:
 
         if not df_results.empty:
             logger.error("Found transactions where label %s is not %s" % (label, sign))
-            WalletData.print_df(df_results, category=True, note=True, labels=True, amount=True)
+            df_logger.print_df(df_results, category=True, note=True, labels=True, amount=True)
 
     @staticmethod
     def find_transfers_inside_outside_wallet(df_transfers):
@@ -214,7 +212,7 @@ class CategoryLabelChecker:
         logger.info(f"Somma colonna importi CON df_transfers_doppi: {somma_df_transfers_doppi}")
         if not df_senza_transfers_doppi.empty:
             logger.info(f"Stampo i dataframe dove non ci sono date con due occorrenze")
-            WalletData.print_df(df_senza_transfers_doppi,
+            df_logger.print_df(df_senza_transfers_doppi,
                                 amount=True, category=True, note=True, labels=False)
         somma_df_senza_transfers_doppi = round(df_senza_transfers_doppi['amount'].sum(), 2)
         logger.info(f"Somma colonna importi df_transfers_doppi: {somma_df_senza_transfers_doppi}")

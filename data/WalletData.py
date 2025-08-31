@@ -1,6 +1,5 @@
 import pandas as pd
 import logging
-from tabulate import tabulate
 
 logger = logging.getLogger("Stefano")
 
@@ -68,35 +67,3 @@ class WalletData:
         account_remained = list(set(accounts) ^ set(accounts_to_keep))
         if len(account_remained) > 0:
             logger.info("The following accounts are not present" + str(account_remained))
-
-    @staticmethod
-    def print_df(dataframe, category=False, note=False, labels=False, amount=False):
-        df = dataframe.copy()
-        df['date'] = df['date'].dt.strftime('%d-%m-%Y')
-        column_list = ['date', 'account']
-        if category:
-            column_list.append('category')
-        if labels:
-            column_list.append('labels')
-        if amount:
-            column_list.append('amount')
-        if note:
-            column_list.append('note')
-            df['note'] = df['note'].replace(r"[\r\n]+", "", regex=True)
-            df['note'] = df['note'].str.slice(0, 30)
-            df['note'] = df['note'].str.ljust(35, "_")
-        print()
-        print(tabulate(df[column_list], headers='keys', tablefmt='tsv', showindex=False))
-
-    @staticmethod
-    def print_df_tabulated(dataframe):
-        df = dataframe.copy()
-        df['date'] = df['date'].dt.strftime('%d-%m-%Y')
-        df['note'] = df['note'].replace(r"[\r\n]+", "", regex=True)
-        df['note'] = df['note'].str.slice(0, 30)
-        df['note'] = df['note'].str.ljust(35, "_")
-        column_list = list(df.columns)
-        column_list.remove("type")
-        column_list.remove("labels")
-        print()
-        print(tabulate(df[column_list], headers='keys', tablefmt='tsv', showindex=False))
