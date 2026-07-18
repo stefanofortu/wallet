@@ -1,7 +1,7 @@
 import pandas
-from data.CategoryStructure import CategoryStructure
-from data.ExpenseGroups import ExpenseGroups
-from data.WalletData import WalletData
+from code.data.CategoryStructure import CategoryStructure
+from code.data.ExpenseGroups import ExpenseGroups
+from code.data.WalletData import WalletData
 import logging
 from utils.LoggingStream import df_logger
 

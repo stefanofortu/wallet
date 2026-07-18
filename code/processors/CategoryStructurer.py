@@ -1,5 +1,5 @@
-from data.Results import Results
-from data.CategoryStructure import CategoryStructure
+from code.data.Results import Results
+from code.data.CategoryStructure import CategoryStructure
 import logging
 
 logger = logging.getLogger("Stefano")

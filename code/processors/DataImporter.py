@@ -1,7 +1,6 @@
 import pandas as pd
-import math
-from data.WalletData import WalletData
-from data.CategoryStructure import CategoryStructure
+from code.data.WalletData import WalletData
+from code.data.CategoryStructure import CategoryStructure
 import logging
 
 logger = logging.getLogger("Stefano")

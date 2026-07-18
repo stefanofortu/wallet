@@ -2,9 +2,9 @@ import shutil
 from datetime import datetime
 import openpyxl
 from openpyxl.styles import Alignment, Font, PatternFill
-from data.Results import Results
-from data.CategoryStructure import CategoryStructure
-from data.ExpenseGroups import ExpenseGroups
+from code.data.Results import Results
+from code.data.CategoryStructure import CategoryStructure
+from code.data.ExpenseGroups import ExpenseGroups
 import logging
 import os
 import platform

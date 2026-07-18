@@ -1,4 +1,4 @@
-from data.ExpenseGroups import ExpenseGroups
+from code.data.ExpenseGroups import ExpenseGroups
 from processors.CategoryStructurer import CategoryStructurer
 from processors.CategoryLabelChecker import CategoryLabelChecker
 from processors.CategoryClassification import CategoryClassification
