@@ -1,4 +1,4 @@
-from data.CategoryStructure import CategoryStructure
+from code.data.CategoryStructure import CategoryStructure
 import logging
 
 logger = logging.getLogger("Stefano")

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QMainWindow
 from PySide6.QtGui import QIcon
-from icons.resources import resource_path
+from code.icons.resources import resource_path
 from code.processors.MainWidget import MainWidget
 from code.processors.ProjectData import ProjectData
 import logging

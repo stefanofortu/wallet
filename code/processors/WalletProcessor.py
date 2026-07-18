@@ -1,10 +1,10 @@
 from code.data.ExpenseGroups import ExpenseGroups
-from processors.CategoryStructurer import CategoryStructurer
-from processors.CategoryLabelChecker import CategoryLabelChecker
-from processors.CategoryClassification import CategoryClassification
-from processors.DataImporter import DataImporter
-from processors.ExcelWriter import ExcelWriter
-from processors.GroupCreator import GroupCreator
+from code.processors.CategoryStructurer import CategoryStructurer
+from code.processors.CategoryLabelChecker import CategoryLabelChecker
+from code.processors.CategoryClassification import CategoryClassification
+from code.processors.DataImporter import DataImporter
+from code.processors.ExcelWriter import ExcelWriter
+from code.processors.GroupCreator import GroupCreator
 import logging
 
 logger = logging.getLogger("Stefano")

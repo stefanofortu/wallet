@@ -3,7 +3,7 @@ from code.data.CategoryStructure import CategoryStructure
 from code.data.ExpenseGroups import ExpenseGroups
 from code.data.WalletData import WalletData
 import logging
-from utils.LoggingStream import df_logger
+from code.utils.LoggingStream import df_logger
 
 logger = logging.getLogger("Stefano")
 
