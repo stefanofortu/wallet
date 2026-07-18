@@ -17,7 +17,7 @@ DIRECTORY_PATH ="/storage/emulated/0/MegaSync_Pixel/_PICTURES_Mega_Sync/"
 
 most_recent_file = get_most_recent_file(DIRECTORY_PATH)
 print(f"Most recent file: {most_recent_file}")
-exit()
+
 main_wallet_selection = False
 
 start_date = "2016-01-01"

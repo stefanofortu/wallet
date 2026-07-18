@@ -50,7 +50,7 @@ class WalletProcessor:
         group_results = group_creator.process(wallet_category_results=wallet_category_results, wallet_data=data)
         # group_results.df.to_excel("group_results.xlsx")
 
-        excel_writer = ExcelWriter(filename_in="files/input_files/Piano_Spesa_Template_v02.xlsx",
+        excel_writer = ExcelWriter(filename_in="Piano_Spesa_Template_v02.xlsx",
                                    template_sheetname="Template",
                                    sheetname_title=("from_" + self.start_date + "_to_" + self.end_date))
 

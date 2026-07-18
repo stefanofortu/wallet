@@ -15,14 +15,14 @@ logger = logging.getLogger("Stefano")
 class ExcelWriter:
     def __init__(self, filename_in, template_sheetname, sheetname_title):
         if platform.system() == "Windows":
-            path_separator = "\\"
+            path_sep = "\\"
         elif platform.system() == "Linux":
-            path_separator = "/"
+            path_sep = "/"
         else:
-            path_separator = "\\"
+            path_sep = "\\"
 
-        self.filename_in = os.getcwd() + path_separator + filename_in
-        self.filename_out = os.getcwd() + path_separator + "output_files" + path_separator + self.create_output_name(filename_in)
+        self.filename_in = os.getcwd() + path_sep + "files" + path_sep + "input_files" + path_sep + filename_in
+        self.filename_out = os.getcwd() + path_sep + "files" + path_sep + "output_files" + path_sep + self.create_output_name(filename_in)
 
         self.create_output_file()
         self.wb = openpyxl.load_workbook(self.filename_out)
