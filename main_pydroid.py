@@ -12,12 +12,12 @@ def get_most_recent_file(directory):
 
 setup_logger()
 
-#directory_path = "C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel"
-
-DIRECTORY_PATH ="/storage/emulated/0/MegaSync_Pixel/"
+#DIRECTORY_PATH = "C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel"
+DIRECTORY_PATH ="/storage/emulated/0/MegaSync_Pixel/_PICTURES_MEGA_SYNC/"
 
 most_recent_file = get_most_recent_file(DIRECTORY_PATH)
 print(f"Most recent file: {most_recent_file}")
+exit()
 main_wallet_selection = False
 
 start_date = "2016-01-01"
