@@ -12,8 +12,8 @@ def get_most_recent_file(directory):
 
 setup_logger()
 
-#DIRECTORY_PATH = "C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel"
-DIRECTORY_PATH ="/storage/emulated/0/MegaSync_Pixel/_PICTURES_Mega_Sync/"
+DIRECTORY_PATH = "C:\\Users\\Stefano\\Documents\\MEGA\\MegaSync_Pixel"
+#DIRECTORY_PATH ="/storage/emulated/0/MegaSync_Pixel/_PICTURES_Mega_Sync/"
 
 most_recent_file = get_most_recent_file(DIRECTORY_PATH)
 print(f"Most recent file: {most_recent_file}")
