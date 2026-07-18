@@ -1,7 +1,7 @@
 import os
 import glob
-from processors.WalletProcessor import WalletProcessor
-from utils.LoggingStream import setup_logger
+from code.processors.WalletProcessor import WalletProcessor
+from code.utils.LoggingStream import setup_logger
 
 def get_most_recent_file(directory):
     files = glob.glob(os.path.join(directory, '*.xls'))

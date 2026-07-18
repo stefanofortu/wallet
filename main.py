@@ -2,8 +2,8 @@ import logging
 import os
 import sys
 from PySide6.QtWidgets import QApplication
-from utils.LoggingStream import setup_logger
-from processors.MainWindow import MainWindow
+from code.utils.LoggingStream import setup_logger
+from code.processors.MainWindow import MainWindow
 import qdarkstyle
 
 logger = logging.getLogger("Stefano")
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     ### style the application; use qdarkstyle or QSS
     use_qss_stylesheets = True
     if use_qss_stylesheets:
-        qss_path = "themes/MaterialDark.qss"
+        qss_path = "code/themes/MaterialDark.qss"
         if os.path.exists(qss_path):
             with open(qss_path, "r") as f:
                 app.setStyleSheet(f.read())
