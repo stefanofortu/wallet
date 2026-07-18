@@ -25,7 +25,7 @@ if __name__ == '__main__':
         qss_path = "themes/MaterialDark.qss"
         if os.path.exists(qss_path):
             with open(qss_path, "r") as f:
-            app.setStyleSheet(f.read())
+                app.setStyleSheet(f.read())
     else:
         # use qdarkstyle library
         app.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyside2'))

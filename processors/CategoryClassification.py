@@ -9,8 +9,6 @@ logger = logging.getLogger("Stefano")
 class CategoryClassification:
     def __init__(self):
         self.all_category = CategoryStructure.get_basic_categories()
-        logger.warning("Aggiungere due ulteriori gruppi: IN, Income_risparmi, Out, Expense_risparmi. Da gestire "
-                       "correttamente")
 
     def process(self, data):
         if not isinstance(data, WalletData):

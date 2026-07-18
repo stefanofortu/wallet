@@ -7,25 +7,25 @@ logger = logging.getLogger("Stefano")
 class ExpenseGroups:
     expense_groups = {
         "Redditi": {
-            "Income": ["Salary", "Interessi & Dividendi", "Regali"]
+            "Income": ["Salary", "Interessi&Dividendi", "Regali"]
         },
         "Essenziali_Dovute": {
-            "Bollette_Manutenzione": ["Energia & Utenze", "Furniture, Maintenance", "Family"],
+            "Bollette_Manutenzione": ["Utenze", "Furniture, Maintenance", "Family"],
             "Macchina": ["Assicurazione veicoli", "Manutenzione veicoli"],
             "Salute_Beneficienza": ["Salute", "Beneficienza"]
         },
         "Indispensabili_Necessità": {
-            "Spesa_Caffe_Lunch": ["Bar & Locali", "Lunch", "Spesa"],
+            "Spesa_Caffe_Lunch": ["Bar&Caffè", "Lunch", "Spesa"],
             "Trasporti": ["Trasporto pubblico", "Carburante", "Parking and Tolls"],
             "Future": ["Work_New", "Education_New"]
         },
         "Volute_NonEssenziali": {
-            "Selfcare(Clothes & Sport)": ["Abbigliamento & Scarpe", "Gifts", "Personal Care", "Sport & Fitness"],
+            "Selfcare(Clothes & Sport)": ["Abbigliamento", "Gifts", "Personal Care", "Sport & Fitness"],
             "Fun & Hobbies": ["Electronics", "Fun", "Hobby", "Adjust balance", "Unexpected"],
             "Travel & Events": ["Eventi", "Summer Holidays", "Weekends"]
         },
         "Spese_Fisse": {
-            "Spese_Immobiliari": ["Affitto/Mutuo", "Beni immobili"],
+            "Spese_Immobiliari": ["Affitto/Mutuo", "Immobili"],
             "Rate_Auto": []
         },
         "Entrate_Casa": {
